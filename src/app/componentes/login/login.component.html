@@ -1,17 +1,20 @@
+<div class="form-container">
+  <h2>Iniciar Sesión</h2>
 
-<div class="login-container">
-    <h2>Login</h2>
-  
-    <form>
-      <input type="text" placeholder="Username" />
-      <input type="password" placeholder="Password" />
-  
-      <button type="submit">Iniciar Sesión</button>
-  
-      <p class="register-link">
-        ¿No tenés cuenta? <a routerLink="/registro">Registrate</a>
-      </p>
-    </form>
-    <button class="volver-btn" routerLink="/">← Volver al menú</button>
+  <form (ngSubmit)="login()">
+    <input type="email" [(ngModel)]="email" name="email" placeholder="Correo electrónico" required />
+    <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña" required />
+    <button type="submit">Ingresar</button>
+
+    <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
+  </form>
+
+  <div class="testing-buttons">
+    <button (click)="completarTest('test1@mail.com', '12345678')">Usuario Test 1</button>
+    <button (click)="completarTest('test2@mail.com', '12345678')">Usuario Test 2</button>
   </div>
-  
+
+  <p class="register-link">
+    ¿No tenés cuenta? <a routerLink="/registro">Registrate</a>
+  </p>
+</div>
