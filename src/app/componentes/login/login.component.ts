@@ -36,10 +36,18 @@ export class LoginComponent {
       await supabase
         .from('logs')
         .insert({ usuario: this.email, fecha: new Date().toISOString() });
+        await supabase.from('logs').insert({
+          email: 'test@example.com',
+          fecha: new Date().toISOString(),
+        })
 
       this.router.navigate(['/home']);
+      
+
     }
   }
+
+  
 
   completarTest(email: string, password: string) {
     this.email = email;

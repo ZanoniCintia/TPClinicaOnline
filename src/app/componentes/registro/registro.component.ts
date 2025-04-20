@@ -13,51 +13,100 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./registro.component.scss']
 })
 export class RegistroComponent {
-  supabase: SupabaseClient;
+  private supabase: SupabaseClient = createClient(environment.apiUrl, environment.publicAnonKey);
+
   email = '';
   password = '';
   nombre = '';
   edad: number | null = null;
-  avatar_url = '';
+  avatarFile: File | null = null;
+  mensaje = '';
+  error = '';
 
-  constructor(private router: Router) {
-    this.supabase = createClient(environment.apiUrl, environment.publicAnonKey);
-  }
+  constructor(private router: Router) {}
 
   async registrarse() {
-    const { data: signUpData, error: signUpError } = await this.supabase.auth.signUp({
+    this.mensaje = '';
+    this.error = '';
+  
+    let avatarUrl = '';
+  
+    // 1. Si hay imagen, la subo al bucket primero
+    if (this.avatarFile) {
+      const fileName = `${Date.now()}_${this.avatarFile.name}`;
+      const { error: uploadError } = await this.supabase.storage
+        .from('avatars')
+        .upload(fileName, this.avatarFile);
+  
+      if (uploadError) {
+        this.error = 'Error al subir la imagen.';
+        return;
+      }
+  
+      const { data: urlData } = this.supabase.storage.from('avatars').getPublicUrl(fileName);
+      avatarUrl = urlData.publicUrl;
+    }
+  
+    // 2. Crear usuario y guardar metadata
+    const { data: signupData, error: signupError } = await this.supabase.auth.signUp({
+      email: this.email,
+      password: this.password,
+      options: {
+        data: {
+          name: this.nombre,
+          age: this.edad,
+          avatar_url: avatarUrl
+        }
+      }
+    });
+  
+    if (signupError) {
+      this.error = 'Este correo ya está registrado.';
+      return;
+    }
+  
+    const userId = signupData.user?.id;
+    if (!userId) {
+      this.error = 'No se pudo obtener el ID del usuario.';
+      return;
+    }
+  
+    // 3. Guardar datos adicionales en tabla usuarios
+    const { error: insertError } = await this.supabase.from('usuarios').insert({
+      authid: userId,
+      email: this.email,
+      name: this.nombre,
+      age: this.edad,
+      avatarurl: avatarUrl
+    });
+  
+    if (insertError) {
+      this.error = 'Error al guardar los datos del usuario.';
+      return;
+    }
+  
+    // 4. Login automático
+    const { error: loginError } = await this.supabase.auth.signInWithPassword({
       email: this.email,
       password: this.password
     });
-
-    if (signUpError) {
-      console.error('Error al registrarse:', signUpError.message);
+  
+    if (loginError) {
+      this.error = 'Error al iniciar sesión automáticamente.';
       return;
     }
-
-    const userId = signUpData.user?.id;
-    if (!userId) {
-      console.error('No se obtuvo el ID del usuario');
-      return;
-    }
-
-    // Ahora insertamos en la tabla `usuarios`
-    const { error: insertError } = await this.supabase
-      .from('usuarios')
-      .insert({
-        authid: userId,
-        email: this.email,
-        name: this.nombre,
-        age: this.edad,
-        avatarurl: this.avatar_url
-      });
-
-    if (insertError) {
-      console.error('Error al guardar en usuarios:', insertError.message);
-      return;
-    }
-
-    console.log('Usuario registrado correctamente');
-    this.router.navigate(['/login']);
+  
+    // 5. Redirigir al home
+    this.mensaje = 'Registro exitoso!';
+    this.router.navigate(['/home']);
   }
+
+  seleccionarArchivo(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.avatarFile = file;
+    }
+  }
+  
+  
 }

@@ -8,6 +8,22 @@
     background-size: cover;
     background-position: center;
   }
+
+ 
+  .success-message {
+    color: #28a745;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
   
   form {
     background-color: rgba(255, 255, 255, 0.95);

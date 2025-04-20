@@ -1,11 +1,55 @@
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { environment } from '../../../environments/environment';
+import { CommonModule } from '@angular/common';
 @Component({
+  imports : [CommonModule],
   selector: 'app-home',
-  imports: [],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+  supabase: SupabaseClient;
+  userName: string = '';
+  userEmail: string = '';
+  avatarUrl: string = '';
 
+  constructor(private router: Router) {
+    this.supabase = createClient(environment.apiUrl, environment.publicAnonKey);
+  }
+
+  async ngOnInit() {
+    const { data: { session } } = await this.supabase.auth.getSession();
+    const user = session?.user;
+
+    if (!user) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.userEmail = user.email || '';
+
+    // Buscar datos en la tabla usuarios
+    const { data, error } = await this.supabase
+      .from('usuarios')
+      .select('name, avatarurl')
+      .eq('email', this.userEmail)
+      .single();
+
+    if (data) {
+      this.userName = data.name;
+      this.avatarUrl = data.avatarurl;
+    }
+
+    // Guardar en tabla logs
+    await this.supabase.from('logs').insert({
+      email: this.userEmail,
+      fecha: new Date().toISOString(),
+    });
+  }
+
+  irAJuego(ruta: string) {
+    this.router.navigate([`/${ruta}`]);
+  }
 }
