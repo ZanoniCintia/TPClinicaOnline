@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  
+
   selector: 'app-ahorcado',
   imports : [CommonModule],
   templateUrl: './ahorcado.component.html',
@@ -27,8 +27,8 @@ export class AhorcadoComponent implements OnInit {
 
   get imagenActual() {
     return this.errores === 0
-    ? 'ahorcado/ahorcado.jpg'
-    : `ahorcado/ahorcado${this.errores}.jpg`;
+    ? '/assets/ahorcado.jpg'
+    : `/assets/ahorcado${this.errores}.jpg`;
   }
 
   constructor(private router: Router) {
