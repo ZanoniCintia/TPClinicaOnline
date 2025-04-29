@@ -44,6 +44,7 @@ export class HomeComponent implements OnInit {
 
     // Guardar en tabla logs
     await this.supabase.from('logs').insert({
+      name: this.userName,
       email: this.userEmail,
       fecha: new Date().toISOString(),
     });
@@ -51,5 +52,17 @@ export class HomeComponent implements OnInit {
 
   irAJuego(ruta: string) {
     this.router.navigate([`/${ruta}`]);
+  }
+
+
+  async logout() {
+    const { error } = await this.supabase.auth.signOut();
+  
+    if (error) {
+      console.error('Error cerrando sesión:', error.message);
+    } else {
+      console.log('Sesión cerrada exitosamente');
+      this.router.navigate(['/login']); // Redirige al login
+    }
   }
 }

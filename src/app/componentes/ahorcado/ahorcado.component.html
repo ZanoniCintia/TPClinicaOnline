@@ -1,0 +1,37 @@
+<div class="ahorcado-container">
+    <!-- Usuario y Home -->
+    <div class="user-info">
+      <span *ngIf="userName">👤 {{ userName }}</span>
+      <a class="logout-link" (click)="volverHome()">Home</a>
+    </div>
+  
+    <h2>Juego del Ahorcado 🔤</h2>
+  
+   
+    <img [src]="imagenActual" class="imagen-ahorcado" />
+  
+ 
+    <div class="palabra">
+      <span *ngFor="let letra of palabraOculta">{{ letra }}</span>
+    </div>
+  
+    <!-- Botonera -->
+    <div class="letras">
+      <button
+        *ngFor="let letra of abecedario"
+        (click)="intentarLetra(letra)"
+        [disabled]="letrasUsadas.includes(letra) || mensaje"
+      >
+        {{ letra }}
+      </button>
+    </div>
+  
+    <!-- Mensaje final -->
+    <div class="mensaje">{{ mensaje }}</div>
+  
+    <!-- Reiniciar -->
+    <button *ngIf="mensaje" (click)="nuevaPartida()" class="boton-reiniciar">
+      Nueva Partida
+    </button>
+  </div>
+  

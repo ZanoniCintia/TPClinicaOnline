@@ -25,6 +25,7 @@ export class LoginComponent {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: this.email,
       password: this.password,
+      
     });
 
     if (error) {
@@ -32,14 +33,19 @@ export class LoginComponent {
         ? 'Usuario o contraseña incorrectos'
         : error.message;
     } else {
-      // Guardar log de ingreso (en Supabase o local)
+       
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const name = userData?.user?.user_metadata?.['name'];
+
+
       await supabase
-        .from('logs')
-        .insert({ usuario: this.email, fecha: new Date().toISOString() });
-        await supabase.from('logs').insert({
-          email: 'test@example.com',
-          fecha: new Date().toISOString(),
-        })
+    .from('logs')
+    .insert({
+      email: this.email,
+      name: name,
+      fecha: new Date().toISOString()
+    });
+      
 
       this.router.navigate(['/home']);
       

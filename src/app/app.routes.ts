@@ -7,22 +7,30 @@ import { RegistroComponent } from './componentes/registro/registro.component';
 
 export const routes: Routes = [
     // Si le ponemos 'prefix' nos va a arrojar un error en la consola de redireccion infinita
-    { path: '', redirectTo: '/home', pathMatch: "full" },
+    {  path: '', redirectTo: '/home', pathMatch: "full" },
     
-    { path: 'login',
+    {   path: 'login',
         loadComponent: () =>
             import('./componentes/login/login.component').then((m) => m.LoginComponent)
     },
-    { path: 'quien-soy', component: QuienSoyComponent},
+    {   path: 'quien-soy', component: QuienSoyComponent},
 
-    { path: 'registro',
+    {   path: 'registro',
         loadComponent: () =>
             import('./componentes/registro/registro.component').then((m) => m.RegistroComponent)
     },
     {
         path: 'home',
-          loadComponent: () => import('./componentes/home/home.component').then(m => m.HomeComponent)
-      },
+        loadComponent: () => import('./componentes/home/home.component').then(m => m.HomeComponent)
+    },
+    {
+        path: 'adivina-emojis',
+        loadComponent: () => import('./componentes/adivina-emojis/adivina-emojis.component').then(m => m.AdivinaEmojisComponent)
+    },
+    {
+        path: 'ahorcado',
+        loadComponent: () => import('./componentes/ahorcado/ahorcado.component').then(m => m.AhorcadoComponent)
+    },
     // La ruta comodin debe ir siempre al final
     { path: '**', component: PageNotFoundComponent },
     

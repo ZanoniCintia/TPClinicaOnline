@@ -2,6 +2,7 @@
     <div class="user-info">
       <span *ngIf="userName">👤 {{ userName }}</span>
       <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" />
+      <a class="logout-link" (click)="logout()">logout</a>
     </div>
   
     <h1>📍 Elegí un juego</h1>
