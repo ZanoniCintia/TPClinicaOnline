@@ -22,7 +22,13 @@ export class AdivinaEmojisComponent implements OnInit {
     { emoji: '🦁👑', nombre: 'El Rey León' },
     { emoji: '❄️👸', nombre: 'Frozen' },
     { emoji: '🍎👸🏻', nombre: 'Blancanieves' },
-    { emoji: '👠👸', nombre: 'Cenicienta' }
+    { emoji: '👠👸', nombre: 'Cenicienta' },
+    { emoji: '🔍🐠🌊', nombre: 'Buscando a Nemo' },
+    { emoji: '🚀👨‍🚀🤠', nombre: 'Toy Story' },
+    { emoji: '🐘👂🎪', nombre: 'Dumbo' },
+    { emoji: '🧞‍♂️🕌🐒', nombre: 'Aladdin' },
+    { emoji: '🐉🤺⚔👦', nombre: 'Cómo Entrenar a tu Dragón' },
+    { emoji: '💃🌹👹', nombre: 'La Bella y la Bestia' }
   ];
 
   peliculaActual: any;
