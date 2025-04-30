@@ -1,1 +1,14 @@
-<p>mayormenor works!</p>
+<div class="mayor-menor">
+    <h2>🃏 Mayor o Menor</h2>
+  
+    <p>Carta actual: <strong>{{ cartaActual }}</strong></p>
+  
+    <button (click)="adivinar('mayor')">Mayor 🔺</button>
+    <button (click)="adivinar('menor')">Menor 🔻</button>
+  
+    <p>{{ mensaje }}</p>
+    <p>Puntaje: {{ puntaje }}</p>
+  
+    <button (click)="reiniciarJuego()">🔄 Reiniciar</button>
+  </div>
+  
