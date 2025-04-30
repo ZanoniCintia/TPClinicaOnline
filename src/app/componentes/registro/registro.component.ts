@@ -7,8 +7,8 @@ import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-registro',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  standalone: false,
+  
   templateUrl: './registro.component.html',
   styleUrls: ['./registro.component.scss']
 })

@@ -80,4 +80,59 @@
   .logout-link:hover {
     color: #5a0099;
   }
+
+  .active-route{
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  :host{
+    display: block;
+    min-height: 100vh;
+    background-image: url('/assets/10142615.jpg');
+    height: 100vh;
+    width: 100%;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .contenedor {
+    margin-top: 100px; 
+    text-align: center;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  p {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: #5e2b97; 
+  }
+  
+  button {
+    background-color: #a259ff; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease;
+  }
+  
+  button:hover {
+    transform: scale(1.05);
+    background-color: #913df2;
+  }
+  
   

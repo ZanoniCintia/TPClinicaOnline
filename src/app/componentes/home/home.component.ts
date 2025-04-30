@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
   }
 
   irAJuego(ruta: string) {
-    this.router.navigate([`/${ruta}`]);
+    this.router.navigate([`/juegos/${ruta}`]);
   }
 
 

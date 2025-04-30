@@ -5,8 +5,9 @@ import { createClient } from '@supabase/supabase-js'
 import { environment } from '../../../environments/environment';
 
 @Component({
+  standalone: false,
   selector: 'app-quien-soy',
-  imports: [FormsModule, RouterLink],
+  
   templateUrl: './quien-soy.component.html',
   styleUrl: './quien-soy.component.scss'
 })

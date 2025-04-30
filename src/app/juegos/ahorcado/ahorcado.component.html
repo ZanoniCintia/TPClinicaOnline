@@ -1,5 +1,4 @@
 <div class="ahorcado-container">
-    <!-- Usuario y Home -->
     <div class="user-info">
       <span *ngIf="userName">👤 {{ userName }}</span>
       <a class="logout-link" (click)="volverHome()">Home</a>
@@ -15,7 +14,7 @@
       <span *ngFor="let letra of palabraOculta">{{ letra }}</span>
     </div>
   
-    <!-- Botonera -->
+    <!-- para el teclado -->
     <div class="letras">
       <button
         *ngFor="let letra of abecedario"
@@ -26,10 +25,9 @@
       </button>
     </div>
   
-    <!-- Mensaje final -->
     <div class="mensaje">{{ mensaje }}</div>
   
-    <!-- Reiniciar -->
+   
     <button *ngIf="mensaje" (click)="nuevaPartida()" class="boton-reiniciar">
       Nueva Partida
     </button>

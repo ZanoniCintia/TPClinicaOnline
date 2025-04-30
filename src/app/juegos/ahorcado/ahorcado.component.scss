@@ -84,4 +84,21 @@
     text-decoration: underline;
     cursor: pointer;
   }
+  .boton-reiniciar {
+    margin-top: 1.5rem;
+    background-color: #a259ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .boton-reiniciar:hover {
+    background-color: #913df2;
+  }
+  
   

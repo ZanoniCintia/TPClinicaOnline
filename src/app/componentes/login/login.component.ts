@@ -9,8 +9,8 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [FormsModule,CommonModule,RouterLink ],
+  standalone: false,
+  
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -47,7 +47,7 @@ export class LoginComponent {
     });
       
 
-      this.router.navigate(['/home']);
+      this.router.navigate(['home']);
       
 
     }

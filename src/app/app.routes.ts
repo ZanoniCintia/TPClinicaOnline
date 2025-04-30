@@ -7,32 +7,36 @@ import { RegistroComponent } from './componentes/registro/registro.component';
 
 export const routes: Routes = [
     // Si le ponemos 'prefix' nos va a arrojar un error en la consola de redireccion infinita
-    {  path: '', redirectTo: '/home', pathMatch: "full" },
-    
-    {   path: 'login',
-        loadComponent: () =>
-            import('./componentes/login/login.component').then((m) => m.LoginComponent)
-    },
-    {   path: 'quien-soy', component: QuienSoyComponent},
+    /*{ path: '', redirectTo: '/login', pathMatch: 'full' },*/
 
-    {   path: 'registro',
-        loadComponent: () =>
-            import('./componentes/registro/registro.component').then((m) => m.RegistroComponent)
-    },
+    { path: '', loadChildren: () => import('./componentes/inicio/inicio.module').then(m => m.InicioModule) }
+
+    ,{
+        path: 'quien-soy',
+        loadChildren: () =>
+          import('./componentes/quien-soy/quien-soy.module').then(m => m.QuienSoyModule),
+      },
+      {
+        path: 'login',
+        loadChildren: () =>
+          import('./componentes/login/login.module').then(m => m.LoginModule),
+      },
+      {
+        path: 'registro',
+        loadChildren: () =>
+          import('./componentes/registro/registro.module').then(m => m.RegistroModule),
+      },
     {
         path: 'home',
-        loadComponent: () => import('./componentes/home/home.component').then(m => m.HomeComponent)
+        loadChildren: () => import('./componentes/home/home.module').then(m => m.HomeModule)
     },
     {
-        path: 'adivina-emojis',
-        loadComponent: () => import('./componentes/adivina-emojis/adivina-emojis.component').then(m => m.AdivinaEmojisComponent)
-    },
-    {
-        path: 'ahorcado',
-        loadComponent: () => import('./componentes/ahorcado/ahorcado.component').then(m => m.AhorcadoComponent)
-    },
+        path: 'juegos',
+        loadChildren: () =>
+          import('./juegos/juegos.module').then(m => m.JuegosModule)
+      }
     // La ruta comodin debe ir siempre al final
-    { path: '**', component: PageNotFoundComponent },
+    ,{ path: '**', component: PageNotFoundComponent },
     
 ];
 

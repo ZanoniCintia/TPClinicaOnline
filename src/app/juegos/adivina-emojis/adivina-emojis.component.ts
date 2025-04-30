@@ -7,8 +7,7 @@ import { RouterLink, Router } from '@angular/router';
 
 @Component({
   selector: 'app-adivina-emojis',
-  standalone: true,
-  imports: [FormsModule, CommonModule],
+  standalone: false,
   templateUrl: './adivina-emojis.component.html',
   styleUrls: ['./adivina-emojis.component.scss'],
 })

@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-
+  standalone:false,
   selector: 'app-ahorcado',
-  imports : [CommonModule],
+ 
   templateUrl: './ahorcado.component.html',
   styleUrls: ['./ahorcado.component.scss']
 })
