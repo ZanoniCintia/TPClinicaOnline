@@ -29,9 +29,25 @@ export class RegistroComponent {
     this.mensaje = '';
     this.error = '';
   
-    let avatarUrl = '';
+    // Validaciones básicas
+    if (!this.email || !this.password || !this.nombre || this.edad == null) {
+      this.error = 'Todos los campos son obligatorios (excepto el avatar).';
+      return;
+    }
   
-    // 1. Si hay imagen, la subo al bucket primero
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+    if (!emailValido) {
+      this.error = 'El correo ingresado no es válido.';
+      return;
+    }
+  
+    if (this.password.length < 6) {
+      this.error = 'La contraseña debe tener al menos 6 caracteres.';
+      return;
+    }
+  
+    // Subida de avatar (si se seleccionó)
+    let avatarUrl = '';
     if (this.avatarFile) {
       const fileName = `${Date.now()}_${this.avatarFile.name}`;
       const { error: uploadError } = await this.supabase.storage
@@ -44,24 +60,31 @@ export class RegistroComponent {
       }
   
       const { data: urlData } = this.supabase.storage.from('avatars').getPublicUrl(fileName);
-      avatarUrl = urlData.publicUrl;
+      avatarUrl = urlData?.publicUrl || '';
     }
   
-    // 2. Crear usuario y guardar metadata
+    // Preparar metadata sin nulls
+    const metadata: any = {
+      name: this.nombre,
+      age: this.edad,
+    };
+    if (avatarUrl) {
+      metadata.avatar_url = avatarUrl;
+    }
+  
+    // Registro en Supabase Auth
     const { data: signupData, error: signupError } = await this.supabase.auth.signUp({
       email: this.email,
       password: this.password,
-      options: {
-        data: {
-          name: this.nombre,
-          age: this.edad,
-          avatar_url: avatarUrl
-        }
-      }
+      options: { data: metadata },
     });
   
     if (signupError) {
-      this.error = 'Este correo ya está registrado.';
+      if (signupError.message.includes('User already registered')) {
+        this.error = 'Este correo ya está registrado.';
+      } else {
+        this.error = 'Error al registrar usuario.';
+      }
       return;
     }
   
@@ -71,13 +94,13 @@ export class RegistroComponent {
       return;
     }
   
-    // 3. Guardar datos adicionales en tabla usuarios
+    // Insertar en la tabla usuarios
     const { error: insertError } = await this.supabase.from('usuarios').insert({
       authid: userId,
       email: this.email,
       name: this.nombre,
       age: this.edad,
-      avatarurl: avatarUrl
+      avatarurl: avatarUrl || null
     });
   
     if (insertError) {
@@ -85,21 +108,21 @@ export class RegistroComponent {
       return;
     }
   
-    // 4. Login automático
+    // Login automático
     const { error: loginError } = await this.supabase.auth.signInWithPassword({
       email: this.email,
-      password: this.password
+      password: this.password,
     });
   
     if (loginError) {
-      this.error = 'Error al iniciar sesión automáticamente.';
+      this.error = 'Registro exitoso, pero no se pudo iniciar sesión.';
       return;
     }
   
-    // 5. Redirigir al home
-    this.mensaje = 'Registro exitoso!';
+    this.mensaje = 'Registro exitoso ✅';
     this.router.navigate(['/home']);
   }
+  
 
   seleccionarArchivo(event: any) {
     const file = event.target.files[0];
@@ -107,6 +130,5 @@ export class RegistroComponent {
       this.avatarFile = file;
     }
   }
-  
   
 }
