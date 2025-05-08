@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MayormenorComponent } from './mayormenor.component';
+import { MayorMenorComponent } from './mayormenor.component';
 
 const routes: Routes = [
-  { path: '', component: MayormenorComponent }
+  { path: '', component: MayorMenorComponent }
 ];
 
 @NgModule({

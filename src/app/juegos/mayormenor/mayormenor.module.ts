@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MayormenorComponent } from './mayormenor.component';
+import { MayorMenorComponent } from './mayormenor.component';
 import { MayorMenorRoutingModule } from './mayormenor-routing.module';
 
+
 @NgModule({
-  declarations: [MayormenorComponent],
+  declarations: [MayorMenorComponent],
   imports: [
     CommonModule,
     FormsModule,

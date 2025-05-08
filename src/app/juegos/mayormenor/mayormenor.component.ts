@@ -1,9 +1,6 @@
-
 import { Component, OnInit } from '@angular/core';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { environment } from '../../../environments/environment';
+import { CartasService } from '../../servicios/cartas.service';
 import { Router } from '@angular/router';
-
 
 @Component({
   standalone:false,
@@ -11,41 +8,82 @@ import { Router } from '@angular/router';
   templateUrl: './mayormenor.component.html',
   styleUrls: ['./mayormenor.component.scss']
 })
-export class MayormenorComponent implements OnInit {
-  cartas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]; // As de 1 a Rey (13)
-  cartaActual: number = 0;
-  cartaNueva: number = 0;
+export class MayorMenorComponent implements OnInit {
+
+  deckId: string = '';
+  cartaActual: any = null;
   puntaje: number = 0;
   mensaje: string = '';
+  juegoTerminado: boolean = false;
+
+  constructor(private cartasService: CartasService, private router: Router) {}
 
   ngOnInit(): void {
-    this.reiniciarJuego();
+    this.iniciarJuego();
+  }
+
+  cartaVolteada: boolean = false;
+
+girarCarta() {
+  this.cartaVolteada = !this.cartaVolteada;
+}
+
+
+  iniciarJuego() {
+    this.cartasService.crearMazo().subscribe(response => {
+      this.deckId = response.deck_id;
+      this.sacarCarta();
+      this.puntaje = 0;
+      this.mensaje = '';
+      this.juegoTerminado = false;
+    });
+  }
+
+  sacarCarta() {
+    this.cartasService.sacarCarta(this.deckId).subscribe(response => {
+      if (response.cards.length > 0) {
+        this.cartaActual = response.cards[0];
+      } else {
+        this.mensaje = '🏆 No quedan más cartas, ganaste!';
+        this.juegoTerminado = true;
+      }
+    });
+  }
+
+  elegir(opcion: 'mayor' | 'menor') {
+    const valorAnterior = this.obtenerValorCarta(this.cartaActual.value);
+
+    this.cartasService.sacarCarta(this.deckId).subscribe(response => {
+      const nuevaCarta = response.cards[0];
+      const valorNuevo = this.obtenerValorCarta(nuevaCarta.value);
+
+      if ((opcion === 'mayor' && valorNuevo > valorAnterior) ||
+          (opcion === 'menor' && valorNuevo < valorAnterior)) {
+        this.puntaje++;
+        this.cartaActual = nuevaCarta;
+      } else {
+        this.cartaActual = nuevaCarta; // <<< IMPORTANTE: mostrar igual la carta
+        this.mensaje = '❌ Fallaste. Juego terminado.';
+        this.juegoTerminado = true;
+      }
+    });
+  }
+
+  obtenerValorCarta(valor: string): number {
+    switch (valor) {
+      case 'ACE': return 14;
+      case 'KING': return 13;
+      case 'QUEEN': return 12;
+      case 'JACK': return 11;
+      default: return Number(valor);
+    }
   }
 
   reiniciarJuego() {
-    this.cartaActual = this.randomCarta();
-    this.mensaje = '';
-    this.puntaje = 0;
+    this.iniciarJuego();
   }
 
-  randomCarta(): number {
-    return this.cartas[Math.floor(Math.random() * this.cartas.length)];
-  }
-
-  adivinar(respuesta: 'mayor' | 'menor') {
-    this.cartaNueva = this.randomCarta();
-    const esMayor = this.cartaNueva > this.cartaActual;
-    const esCorrecto =
-      (respuesta === 'mayor' && esMayor) || (respuesta === 'menor' && !esMayor);
-
-    if (esCorrecto) {
-      this.puntaje++;
-      this.mensaje = '✅ ¡Correcto!';
-    } else {
-      this.mensaje = `❌ Fallaste. Era ${this.cartaNueva}. Puntaje final: ${this.puntaje}`;
-      this.puntaje = 0;
-    }
-
-    this.cartaActual = this.cartaNueva;
+  volverMenu() {
+    this.router.navigate(['/home']);
   }
 }
