@@ -17,7 +17,13 @@ const routes: Routes = [
     path: 'mayormenor',
     loadChildren: () =>
       import('./mayormenor/mayormenor.module').then(m => m.MayorMenorModule)
+  },
+  {
+    path: 'chat',
+    loadChildren: () =>
+      import('./chat/chat.module').then(m => m.ChatModule)
   }
+  
 ];
 
 @NgModule({

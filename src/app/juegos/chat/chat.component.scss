@@ -1,0 +1,114 @@
+.chat-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  
+    h2 {
+      text-align: center;
+      color: #6a1b9a;
+      margin-bottom: 20px;
+    }
+  
+    .mensajes {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 10px;
+      background: #f9f9f9;
+      margin-bottom: 15px;
+    }
+  
+    .mensaje {
+      margin-bottom: 12px;
+      padding: 8px;
+      background: #e1bee7;
+      border-radius: 10px;
+  
+      strong {
+        color: #4a148c;
+      }
+  
+      small {
+        float: right;
+        color: #555;
+      }
+  
+      .contenido {
+        margin-top: 4px;
+        font-size: 15px;
+      }
+    }
+  
+    .formulario-chat {
+      display: flex;
+      gap: 10px;
+  
+      input[type='text'] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+  
+      button {
+        background-color: #8e24aa;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+  
+        &:hover {
+          background-color: #6a1b9a;
+        }
+      }
+    }
+  }
+
+  .form-chat {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  
+    input[type="text"] {
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      border: 1px solid #ccc;
+      width: 60%;
+    }
+  
+    .boton-enviar {
+      background-color: #a347f3;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: #8e3bd1;
+      }
+    }
+  }
+  
+  .boton-volver {
+    margin-top: 1rem;
+    background-color: #8e3bd1;
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  
