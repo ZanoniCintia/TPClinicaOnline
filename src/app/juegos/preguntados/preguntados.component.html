@@ -1,0 +1,29 @@
+<div class="preguntados-container" *ngIf="!juegoFinalizado; else final">
+  <div class="header">
+    <span class="usuario">👤 {{ userName }}</span>
+    <a (click)="volverHome()" class="volver">Home</a>
+  </div>
+
+  <h2 class="titulo">Pregunta {{ preguntaActual }} de {{ totalPreguntas }}</h2>
+
+  <p>⏳ Tiempo: {{ segundosRestantes }} segundos</p>
+
+  <img *ngIf="imagenPersonaje" [src]="imagenPersonaje" class="personaje-img" />
+
+  <div class="opciones">
+    <button *ngFor="let opcion of opciones" (click)="seleccionar(opcion)">
+      {{ opcion }}
+    </button>
+  </div>
+
+  <p class="mensaje">{{ mensaje }}</p>
+  <p class="puntos">Puntos: {{ puntos }}</p>
+</div>
+
+<ng-template #final>
+  <div class="preguntados-container">
+    <h2>🎉 Juego finalizado</h2>
+    <p>Tu puntaje final: {{ puntos }} / {{ totalPreguntas }}</p>
+    <button (click)="volverHome()">Volver al inicio</button>
+  </div>
+</ng-template>

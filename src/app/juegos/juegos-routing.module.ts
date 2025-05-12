@@ -22,7 +22,12 @@ const routes: Routes = [
     path: 'chat',
     loadChildren: () =>
       import('./chat/chat.module').then(m => m.ChatModule)
+  },
+  {
+    path: 'preguntados',
+    loadChildren: () => import('./preguntados/preguntados.module').then(m => m.PreguntadosModule)
   }
+  
   
 ];
 

@@ -34,72 +34,118 @@ export class AdivinaEmojisComponent implements OnInit {
   respuestaUsuario = '';
   mensaje = '';
   intentosRestantes = 3;
+  aciertos: number = 0;
+  indiceActual: number = 0;
+  peliculasAMostrar: any[] = [];
+  juegoFinalizado: boolean = false;
+
 
   constructor(private router: Router) {
     this.supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   }
 
-  async ngOnInit() {
-    const { data: { session } } = await this.supabase.auth.getSession();
-    const user = session?.user;
+ngOnInit(): void {
+  this.obtenerUsuario();
+}
 
-    if (!user) {
-      this.router.navigate(['/login']);
-      return;
-    }
+async obtenerUsuario() {
+  const { data: { session } } = await this.supabase.auth.getSession();
+  const user = session?.user;
 
-    this.userEmail = user.email || '';
-
-    const { data, error } = await this.supabase
-      .from('usuarios')
-      .select('name, avatarurl')
-      .eq('email', this.userEmail)
-      .single();
-
-    if (data) {
-      this.userName = data.name;
-      this.avatarUrl = data.avatarurl;
-    } else {
-      console.error('Usuario no encontrado en tabla usuarios', error);
-      this.router.navigate(['/login']);
-    }
-
-    this.nuevaPelicula();
+  if (!user) {
+    this.router.navigate(['/login']);
+    return;
   }
+
+  this.userEmail = user.email || '';
+
+  const { data, error } = await this.supabase
+    .from('usuarios')
+    .select('name, avatarurl')
+    .eq('email', this.userEmail)
+    .single();
+
+  if (data) {
+    this.userName = data.name;
+    this.avatarUrl = data.avatarurl;
+  } else {
+    console.error('Usuario no encontrado en tabla usuarios', error);
+    this.router.navigate(['/login']);
+  }
+
+  this.iniciarJuego();
+}
+
+iniciarJuego() {
+  this.peliculasAMostrar = this.peliculas.sort(() => 0.5 - Math.random()).slice(0, 10);
+  this.indiceActual = 0;
+  this.aciertos = 0;
+  this.juegoFinalizado = false;
+  this.mensaje = '';
+  this.nuevaPelicula();
+}
+
+
 
   volverHome() {
     this.router.navigate(['/home']);
   }
 
-  nuevaPelicula() {
-    const randomIndex = Math.floor(Math.random() * this.peliculas.length);
-    this.peliculaActual = this.peliculas[randomIndex];
-    this.respuestaUsuario = '';
-    this.mensaje = '';
-    this.intentosRestantes = 3;
+ nuevaPelicula() {
+  if (this.indiceActual >= 10) {
+    this.finalizarJuego();
+    return;
   }
 
-  verificar() {
-    const normalizar = (texto: string) =>
-      texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  this.peliculaActual = this.peliculasAMostrar[this.indiceActual];
+  this.respuestaUsuario = '';
+  this.mensaje = '';
+  this.intentosRestantes = 3;
+}
 
-    if (normalizar(this.respuestaUsuario.trim()) === normalizar(this.peliculaActual.nombre)) {
-      this.mensaje = '✅ ¡Correcto!';
-      this.supabase.from('puntos').insert({
-        email: this.userEmail,
-        juego: 'Adivina con Emojis',
-        puntos: 1,
-        fecha: new Date().toISOString()
-      });
+
+verificar() {
+  const normalizar = (texto: string) =>
+    texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  if (normalizar(this.respuestaUsuario.trim()) === normalizar(this.peliculaActual.nombre)) {
+    this.mensaje = '✅ ¡Correcto!';
+    this.aciertos++;
+    setTimeout(() => {
+      this.indiceActual++;
+      this.nuevaPelicula();
+    }, 1000);
+  } else {
+    this.intentosRestantes--;
+    if (this.intentosRestantes === 0) {
+      this.mensaje = `❌ Perdiste esta. Era: ${this.peliculaActual.nombre}`;
+      setTimeout(() => {
+        this.indiceActual++;
+        this.nuevaPelicula();
+      }, 1500);
     } else {
-      this.intentosRestantes--;
-      if (this.intentosRestantes === 0) {
-        this.mensaje = `❌ Perdiste. Era: ${this.peliculaActual.nombre}`;
-      } else {
-        this.mensaje = `❌ Incorrecto. Te quedan ${this.intentosRestantes} intentos.`;
-      }
+      this.mensaje = `❌ Incorrecto. Te quedan ${this.intentosRestantes} intentos.`;
     }
   }
+}
+  finalizarJuego() {
+  this.juegoFinalizado = true;
+
+  this.supabase.from('puntos').insert({
+    email: this.userEmail,
+    juego: 'Adivina con Emojis',
+    resultado: 'Finalizado',
+    puntos: this.aciertos
+  }).then(({ error }) => {
+    if (error) {
+      console.error('❌ Error al guardar resultado final:', error.message);
+    } else {
+      console.log('✅ Resultado final guardado');
+    }
+  });
+}
+
+
 
   reiniciar() {
     this.nuevaPelicula();
