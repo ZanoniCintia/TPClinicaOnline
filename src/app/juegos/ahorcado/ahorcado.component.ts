@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 
 @Component({
   standalone:false,
   selector: 'app-ahorcado',
- 
   templateUrl: './ahorcado.component.html',
   styleUrls: ['./ahorcado.component.scss']
 })
@@ -17,18 +15,19 @@ export class AhorcadoComponent implements OnInit {
   userName: string = '';
   avatarUrl: string = '';
 
-  palabras = ['ANGULAR', 'SUPABASE', 'JUEGO', 'AHORCADO','ARGENTINA'];
+  palabras = ['ANGULAR', 'SUPABASE', 'JUEGO', 'AHORCADO', 'ARGENTINA'];
   palabraSecreta: string = '';
   palabraOculta: string[] = [];
   abecedario: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   letrasUsadas: string[] = [];
   errores: number = 0;
   mensaje: string = '';
+  juegoFinalizado: boolean = false;
 
   get imagenActual() {
     return this.errores === 0
-    ? '/assets/ahorcado.jpg'
-    : `/assets/ahorcado${this.errores}.jpg`;
+      ? '/assets/ahorcado.jpg'
+      : `/assets/ahorcado${this.errores}.jpg`;
   }
 
   constructor(private router: Router) {
@@ -68,11 +67,11 @@ export class AhorcadoComponent implements OnInit {
     this.letrasUsadas = [];
     this.errores = 0;
     this.mensaje = '';
+    this.juegoFinalizado = false;
   }
-  
 
   intentarLetra(letra: string) {
-    if (this.letrasUsadas.includes(letra)) return;
+    if (this.juegoFinalizado || this.letrasUsadas.includes(letra)) return;
 
     this.letrasUsadas.push(letra);
 
@@ -92,9 +91,35 @@ export class AhorcadoComponent implements OnInit {
   comprobarEstado() {
     if (this.errores >= 6) {
       this.mensaje = `❌ Perdiste. Era: ${this.palabraSecreta}`;
+      this.finalizarJuego('Perdió');
     } else if (!this.palabraOculta.includes('_')) {
       this.mensaje = '✅ ¡Ganaste!';
+      this.finalizarJuego('Ganó');
     }
+  }
+
+  finalizarJuego(resultado: string) {
+    if (this.juegoFinalizado) return;
+    this.juegoFinalizado = true;
+
+    const letrasAdivinadas = this.palabraOculta.filter(l => l !== '_').length;
+
+    this.supabase.from('puntos').insert({
+      email: this.userEmail,
+      juego: 'Ahorcado',
+      resultado: resultado,
+      puntos: letrasAdivinadas,
+      fecha: new Date().toISOString()
+    }).then(({ error }) => {
+      if (error) {
+        console.error('❌ Error al guardar resultado:', error.message);
+      } else {
+        console.log('✅ Resultado guardado');
+        this.router.navigate(['/juegos/historial'], {
+          queryParams: { juego: 'Ahorcado' }
+        });
+      }
+    });
   }
 
   volverHome() {

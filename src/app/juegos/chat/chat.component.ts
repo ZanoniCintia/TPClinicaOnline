@@ -32,7 +32,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.userEmail = user.email!;
 
-    // Cargar mensajes existentes
+   
     const { data, error } = await this.supabase
       .from('chat')
       .select('*')
@@ -42,7 +42,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.mensajes = data;
     }
 
-    // Suscripción realtime
+    // realtime
     this.subscription = this.supabase
       .channel('chat-room')
       .on(

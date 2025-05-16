@@ -4,7 +4,7 @@
     <div class="mensajes">
       <div *ngFor="let msg of mensajes" class="mensaje">
         <strong>{{ msg.user_email }}</strong>
-        <small>({{ msg.fecha_chat | date:'short' }})</small>
+        <small>({{ msg.fecha_chat | date:'dd/MM/yyyy, HH:mm'  }})</small>
         <div>{{ msg.mensaje }}</div>
       </div>
     </div>

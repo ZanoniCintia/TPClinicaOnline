@@ -1,6 +1,9 @@
-// src/app/juegos/juegos-routing.module.ts
+
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { HistorialComponent } from './historial/historial.component';
+
+
 
 const routes: Routes = [
   {
@@ -26,6 +29,10 @@ const routes: Routes = [
   {
     path: 'preguntados',
     loadChildren: () => import('./preguntados/preguntados.module').then(m => m.PreguntadosModule)
+  },
+  {
+    path: 'historial',
+    component: HistorialComponent
   }
   
   

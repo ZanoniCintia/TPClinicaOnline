@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 
-
 @Component({
   standalone:false,
   selector: 'app-mayormenor',
@@ -12,55 +11,47 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./mayormenor.component.scss']
 })
 export class MayorMenorComponent implements OnInit {
+  supabase: SupabaseClient;
 
   deckId: string = '';
   cartaActual: any = null;
+  cartaVolteada: boolean = false;
   puntaje: number = 0;
   mensaje: string = '';
   juegoTerminado: boolean = false;
-  supabase: SupabaseClient;
+
   userEmail: string = '';
-  userName: string = '';
 
-
-  constructor(private cartasService: CartasService, private router: Router) {
+  constructor(
+    private cartasService: CartasService,
+    private router: Router
+  ) {
     this.supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   }
 
-  ngOnInit(): void {
-  this.obtenerUsuario().then(() => this.iniciarJuego());
-}
-
-async obtenerUsuario() {
-  const { data: { session } } = await this.supabase.auth.getSession();
-  const user = session?.user;
-  if (user) {
-    this.userEmail = user.email || '';
-    const { data } = await this.supabase
-      .from('usuarios')
-      .select('name')
-      .eq('email', this.userEmail)
-      .single();
-    this.userName = data?.name || '';
+  async ngOnInit(): Promise<void> {
+    await this.obtenerUsuario();
+    this.iniciarJuego();
   }
-}
 
-
-  cartaVolteada: boolean = false;
-
-girarCarta() {
-  this.cartaVolteada = !this.cartaVolteada;
-}
-
+  async obtenerUsuario() {
+    const { data: { session } } = await this.supabase.auth.getSession();
+    const user = session?.user;
+    this.userEmail = user?.email || '';
+  }
 
   iniciarJuego() {
     this.cartasService.crearMazo().subscribe(response => {
       this.deckId = response.deck_id;
-      this.sacarCarta();
       this.puntaje = 0;
       this.mensaje = '';
       this.juegoTerminado = false;
+      this.sacarCarta();
     });
+  }
+
+  girarCarta() {
+    this.cartaVolteada = !this.cartaVolteada;
   }
 
   sacarCarta() {
@@ -70,6 +61,7 @@ girarCarta() {
       } else {
         this.mensaje = '🏆 No quedan más cartas, ganaste!';
         this.juegoTerminado = true;
+        this.registrarPuntaje('Ganó');
       }
     });
   }
@@ -86,30 +78,12 @@ girarCarta() {
         this.puntaje++;
         this.cartaActual = nuevaCarta;
       } else {
-        this.cartaActual = nuevaCarta; 
+        this.cartaActual = nuevaCarta;
         this.mensaje = '❌ Fallaste. Juego terminado.';
         this.juegoTerminado = true;
+        this.registrarPuntaje('Perdió');
       }
-
-      this.mensaje = '❌ Fallaste. Juego terminado.';
-  this.juegoTerminado = true;
-
-  this.supabase.from('puntos').insert({
-    email: this.userEmail,
-    juego: 'MayorMenor',
-    resultado: 'Perdió',
-    puntos: this.puntaje
-  }).then(({ error }) => {
-    if (error) {
-      console.error('❌ Error al guardar puntaje:', error.message);
-    } else {
-      console.log('✅ Puntaje guardado correctamente');
-    }
-  });
-
     });
-
-    
   }
 
   obtenerValorCarta(valor: string): number {
@@ -128,5 +102,24 @@ girarCarta() {
 
   volverMenu() {
     this.router.navigate(['/home']);
+  }
+
+  registrarPuntaje(resultado: string) {
+    this.supabase.from('puntos').insert({
+      email: this.userEmail,
+      juego: 'MayorMenor',
+      resultado: resultado,
+      puntos: this.puntaje,
+      fecha: new Date().toISOString()
+    }).then(({ error }) => {
+      if (error) {
+        console.error('❌ Error al guardar el puntaje:', error.message);
+      } else {
+        console.log('✅ Puntaje registrado');
+        this.router.navigate(['/juegos/historial'], {
+          queryParams: { juego: 'MayorMenor' }
+        });
+      }
+    });
   }
 }

@@ -135,15 +135,20 @@ verificar() {
     email: this.userEmail,
     juego: 'Adivina con Emojis',
     resultado: 'Finalizado',
-    puntos: this.aciertos
+    puntos: this.aciertos,
+    fecha: new Date().toISOString()
   }).then(({ error }) => {
     if (error) {
       console.error('❌ Error al guardar resultado final:', error.message);
     } else {
       console.log('✅ Resultado final guardado');
+      this.router.navigate(['/juegos/historial'], {
+        queryParams: { juego: 'Adivina con Emojis' }
+      });
     }
   });
 }
+
 
 
 

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PreguntadosService } from '../../servicios/preguntados.service';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
-
+import { Router } from '@angular/router'
 @Component({
   standalone:false,
   selector: 'app-preguntados',
@@ -26,7 +26,7 @@ export class PreguntadosComponent implements OnInit, OnDestroy {
   segundosRestantes = 5;
   temporizador: any;
 
-  constructor(private preguntadosService: PreguntadosService) {
+  constructor(private preguntadosService: PreguntadosService, private router: Router) {
     this.supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   }
 
@@ -131,6 +131,11 @@ finalizarJuego() {
       console.log('✅ Puntaje guardado');
     }
   });
+  this.router.navigate(['/juegos/historial'], {
+  queryParams: { juego: 'Preguntados' }
+});
+
+
 }
 
 

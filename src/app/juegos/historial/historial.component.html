@@ -1,0 +1,41 @@
+<div class="historial-container">
+  <div class="header">
+    <span class="usuario">👤 {{ userEmail }}</span>
+    <a class="volver" routerLink="/home">🏠 Volver al menú</a>
+  </div>
+
+  <h2 class="titulo">🏆 Ranking de {{ juegoActual }}</h2>
+
+  <table *ngIf="resultados.length > 0; else sinResultados">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Jugador</th>
+        <th>Puntos</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of resultados.slice(paginaActual * 10, (paginaActual + 1) * 10); let i = index">
+        <td>{{ i + 1 + (paginaActual * 10) }}</td>
+        <td>{{ r.email }}</td>
+        <td>{{ r.puntos }}</td>
+        <td>{{ r.fecha | date:'dd/MM/yyyy, HH:mm'  }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="paginacion" *ngIf="resultados.length > 10">
+    <button (click)="paginaActual = paginaActual - 1" [disabled]="paginaActual === 0">
+      ⬅ Anterior
+    </button>
+    <span>Página {{ paginaActual + 1 }} de {{ totalPaginas }}</span>
+    <button (click)="paginaActual = paginaActual + 1" [disabled]="(paginaActual + 1) * 10 >= resultados.length">
+      Siguiente ➡
+    </button>
+  </div>
+
+  <ng-template #sinResultados>
+    <p>No hay resultados aún para este juego.</p>
+  </ng-template>
+</div>
