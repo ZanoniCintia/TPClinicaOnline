@@ -111,4 +111,28 @@
     font-weight: bold;
   }
   
-  
+  .mensaje {
+  display: flex;
+  justify-content: flex-start;
+
+  .burbuja {
+    background: #e1bee7;
+    padding: 10px;
+    border-radius: 16px 16px 16px 0;
+    max-width: 70%;
+  }
+}
+
+.mensaje.propio {
+  justify-content: flex-end;
+
+  .burbuja {
+    background: #c8e6c9; // verde claro
+    border-radius: 16px 16px 0 16px;
+    text-align: right;
+
+    strong {
+      display: none;
+    }
+  }
+}

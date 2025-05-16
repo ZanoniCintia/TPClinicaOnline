@@ -1,13 +1,20 @@
 <div class="chat-container">
     <h2>💬 Sala de Chat</h2>
   
-    <div class="mensajes">
-      <div *ngFor="let msg of mensajes" class="mensaje">
-        <strong>{{ msg.user_email }}</strong>
-        <small>({{ msg.fecha_chat | date:'dd/MM/yyyy, HH:mm'  }})</small>
-        <div>{{ msg.mensaje }}</div>
-      </div>
+   <div class="mensajes">
+  <div 
+    *ngFor="let msg of mensajes"
+    class="mensaje"
+    [ngClass]="{ 'propio': msg.user_email === userEmail }"
+  >
+    <div class="burbuja">
+      <!-- Mostrar nombre solo si NO es del usuario actual -->
+      <strong *ngIf="msg.user_email !== userEmail">{{ msg.user_email }}</strong>
+      <small>{{ msg.fecha_chat | date:'dd/MM/yyyy, HH:mm' }}</small>
+      <div class="contenido">{{ msg.mensaje }}</div>
     </div>
+  </div>
+</div>
   
     <form (ngSubmit)="enviarMensaje()" class="form-chat">
         <input type="text" [(ngModel)]="nuevoMensaje" name="mensaje" placeholder="Escribe un mensaje..." required />
