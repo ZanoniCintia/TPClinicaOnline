@@ -1,0 +1,65 @@
+<div class="encuesta-container">
+  <h2>📝 Encuesta de Satisfacción</h2>
+
+  <form *ngIf="encuestaForm" [formGroup]="encuestaForm" (ngSubmit)="enviar()">
+
+
+    <!-- Nombre y Apellido -->
+    <label for="nombre">Nombre y Apellido:</label>
+    <input id="nombre" type="text" formControlName="nombre" />
+    <div *ngIf="encuestaForm.get('nombre')?.invalid && encuestaForm.get('nombre')?.touched" class="error">
+      Ingresá tu nombre completo.
+    </div>
+
+    <!-- Edad -->
+    <label for="edad">Edad:</label>
+    <input id="edad" type="number" formControlName="edad" />
+    <div *ngIf="encuestaForm.get('edad')?.invalid && encuestaForm.get('edad')?.touched" class="error">
+      Edad válida: entre 18 y 99 años.
+    </div>
+
+    <!-- Teléfono -->
+    <label for="telefono">Teléfono:</label>
+    <input id="telefono" type="text" maxlength="10" formControlName="telefono" />
+    <div *ngIf="encuestaForm.get('telefono')?.invalid && encuestaForm.get('telefono')?.touched" class="error">
+      Solo números, máximo 10 dígitos.
+    </div>
+
+    <!-- Juego Favorito -->
+    <label for="juego">¿Qué juego de la app disfrutaste más?</label>
+    <select id="juego" formControlName="juegoFavorito">
+      <option value="" disabled selected>Seleccioná uno</option>
+      <option value="Ahorcado">Ahorcado</option>
+      <option value="Mayor o Menor">Mayor o Menor</option>
+      <option value="Preguntados">Preguntados</option>
+      <option value="Adivina con Emojis">Adivina con Emojis</option>
+    </select>
+    <div *ngIf="encuestaForm.get('juegoFavorito')?.invalid && encuestaForm.get('juegoFavorito')?.touched" class="error">
+      Seleccioná un juego.
+    </div>
+
+    <!-- Aspectos positivos -->
+    <label>¿Qué aspectos te gustaron más?</label>
+    <div class="checkbox-group">
+      <label><input type="checkbox" formControlName="aspectoVisual" /> Diseño visual</label>
+      <label><input type="checkbox" formControlName="jugabilidad" /> Jugabilidad</label>
+      <label><input type="checkbox" formControlName="rapidez" /> Rapidez</label>
+    </div>
+
+    <!-- Recomendación -->
+    <label>¿Recomendarías esta app?</label>
+    <div class="radio-group">
+      <label><input type="radio" formControlName="recomienda" value="Sí" /> Sí</label>
+      <label><input type="radio" formControlName="recomienda" value="No" /> No</label>
+    </div>
+    <div *ngIf="encuestaForm.get('recomienda')?.invalid && encuestaForm.get('recomienda')?.touched" class="error">
+      Seleccioná una opción.
+    </div>
+
+    <!-- Comentario -->
+    <label for="comentario">¿Querés dejarnos un comentario o sugerencia?</label>
+    <textarea id="comentario" formControlName="comentario" rows="3"></textarea>
+
+    <button type="submit" [disabled]="encuestaForm.invalid">Enviar encuesta</button>
+  </form>
+</div>
