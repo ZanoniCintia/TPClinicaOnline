@@ -1,22 +1,15 @@
-
-
-
 <div class="home-container">
+  <div class="content-box">
     <div class="user-info">
       <span *ngIf="userName">👤 {{ userName }}</span>
-      <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" />
+      <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" class="avatar-img" />
       <a class="logout-link" (click)="logout()">logout</a>
     </div>
-  
-    <h1>📍 Elegí un juego</h1>
-  
+
+    <h1>🏥 Central de turnos</h1>
+
     <div class="botones-juegos">
-      <button (click)="irAJuego('ahorcado')">🪢 Ahorcado</button>
-      <button (click)="irAJuego('mayormenor')">🔢 Mayor o Menor</button>
-      <button (click)="irAJuego('preguntados')">❓ Preguntados</button>
-      <button (click)="irAJuego('adivina-emojis')">😊 Adivina con Emojis</button>
-      <button (click)="irAJuego('chat')">📨 Chat</button>
-      <button (click)="irAJuego('encuesta')">🗣 Encuesta</button>
+      <!-- botones u opciones -->
     </div>
   </div>
-  
+</div>

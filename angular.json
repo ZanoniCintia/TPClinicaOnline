@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "SalaJuegosZanoni": {
+    "tpclinica": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/sala-juegos-zanoni",
+            "outputPath": "dist/tpclinica",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -71,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "SalaJuegosZanoni:build:production"
+              "buildTarget": "tpclinica:build:production"
             },
             "development": {
-              "buildTarget": "SalaJuegosZanoni:build:development"
+              "buildTarget": "tpclinica:build:development"
             }
           },
           "defaultConfiguration": "development"

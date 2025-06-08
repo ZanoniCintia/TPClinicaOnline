@@ -36,12 +36,18 @@ export class HomeComponent implements OnInit {
       .select('name, avatarurl')
       .eq('email', this.userEmail)
       .single();
+    
+
 
     if (data) {
       this.userName = data.name;
-      this.avatarUrl = data.avatarurl;
-    }
+      this.avatarUrl = Array.isArray(data.avatarurl)
+  ? data.avatarurl[0]
+  : (typeof data.avatarurl === 'string' ? data.avatarurl.replace(/^"(.*)"$/, '$1') : '');
 
+
+    }
+    console.log('Usuario obtenido:', data);
     // Guardar en tabla logs
     await this.supabase.from('logs').insert({
       name: this.userName,

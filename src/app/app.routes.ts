@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent} from './componentes/login/login.component';
 import { HomeComponent } from './componentes/home/home.component';
 import { PageNotFoundComponent } from './componentes/page-not-found/page-not-found.component';
-import { QuienSoyComponent } from './componentes/quien-soy/quien-soy.component';
+
 import { RegistroComponent } from './componentes/registro/registro.component';
 
 export const routes: Routes = [
@@ -11,11 +11,7 @@ export const routes: Routes = [
 
     { path: '', loadChildren: () => import('./componentes/inicio/inicio.module').then(m => m.InicioModule) }
 
-    ,{
-        path: 'quien-soy',
-        loadChildren: () =>
-          import('./componentes/quien-soy/quien-soy.module').then(m => m.QuienSoyModule),
-      },
+    ,
       {
         path: 'login',
         loadChildren: () =>
@@ -31,9 +27,13 @@ export const routes: Routes = [
         loadChildren: () => import('./componentes/home/home.module').then(m => m.HomeModule)
     },
     {
-        path: 'juegos',
+      path: 'admin',
+      loadChildren: () => import('./componentes/admin/admin.module').then(m => m.AdminModule)
+    },
+    {
+        path: 'consultorios',
         loadChildren: () =>
-          import('./juegos/juegos.module').then(m => m.JuegosModule)
+          import('./consultorios/consultorios.module').then(m => m.ConsultoriosModule)
       }
     // La ruta comodin debe ir siempre al final
     ,{ path: '**', component: PageNotFoundComponent },

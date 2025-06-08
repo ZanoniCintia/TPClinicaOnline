@@ -1,16 +1,27 @@
-body {
+/*body {
   margin: 0;
   padding: 0;
-  /*background-image: url('/assets/fondo-login.jpg');*/
+  background-image: url('/assets/10523687.jpg');
   background-size: cover;
   background-position: center;
   font-family: 'Segoe UI', sans-serif;
-}
+}*/
+
+:host{
+    display: block;
+    min-height: 100vh;
+    background-image: url('/assets/10523687.jpg');
+    height: 100vh;
+    width: 100%;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 
 .form-container {
   max-width: 400px;
   margin: 10vh auto;
-  background: white;
+  background:  #e6f4fa;
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
@@ -18,7 +29,7 @@ body {
 }
 
 h2 {
-  color: #5c27fe;
+  color: #24aceb; 
   margin-bottom: 25px;
 }
 
@@ -36,7 +47,7 @@ input {
 button {
   width: 100%;
   padding: 12px;
-  background-color: #a34ef7;
+  background-color:  #2376eb; 
   color: white;
   border: none;
   border-radius: 10px;
@@ -47,7 +58,7 @@ button {
   cursor: pointer;
 
   &:hover {
-    background-color: #7f38cc;
+    background-color: #24aceb; 
   }
 }
 
@@ -56,10 +67,10 @@ button {
 
   button {
     margin-top: 10px;
-    background-color: #7f38cc;
+    background-color:  #24aceb; 
 
     &:hover {
-      background-color: #5c27fe;
+      background-color:#2376eb;
     }
   }
 }
@@ -69,7 +80,7 @@ button {
   font-size: 14px;
 
   a {
-    color: #7f38cc;
+    color: #24aceb; 
     text-decoration: none;
     font-weight: bold;
 
@@ -87,7 +98,7 @@ button {
 
 .volver-btn {
   margin-top: 1.5rem;
-  background-color: #a259ff;
+  background-color:#2376eb;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -99,6 +110,15 @@ button {
 }
 
 .volver-btn:hover {
-  background-color: #913df2;
+  background-color: #2376eb;
+}
+.spinner {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.spinner img {
+  width: 60px;
+  height: 60px;
 }
 

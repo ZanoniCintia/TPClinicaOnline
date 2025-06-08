@@ -1,45 +1,42 @@
 <div class="form-container">
-    <h2>Registrarse</h2>
-    <form (ngSubmit)="registrarse()">
-      <input
-        type="email"
-        [(ngModel)]="email"
-        name="email"
-        placeholder="Correo electrónico"
-        required
-      />
-      <input
-        type="password"
-        [(ngModel)]="password"
-        name="password"
-        placeholder="Contraseña"
-        required
-      />
-      <input
-        type="text"
-        [(ngModel)]="nombre"
-        name="nombre"
-        placeholder="Nombre"
-        required
-      />
-      <input
-        type="number"
-        [(ngModel)]="edad"
-        name="edad"
-        placeholder="Edad"
-        required
-      />
-        <input type="file" (change)="seleccionarArchivo($event)" />
+  <h2>Registrarse</h2>
+  <form (ngSubmit)="registrarse()">
+    <!-- Roles -->
+    <label><input type="checkbox" [(ngModel)]="rolPaciente" name="rolPaciente" /> Paciente</label>
+    <label><input type="checkbox" [(ngModel)]="rolEspecialista" name="rolEspecialista" /> Especialista</label>
 
+    <!-- Datos comunes -->
+    <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre" required />
+    <input type="text" [(ngModel)]="apellido" name="apellido" placeholder="Apellido" required />
+    <input type="number" [(ngModel)]="edad" name="edad" placeholder="Edad" required min="0" />
+    <input type="text" [(ngModel)]="dni" name="dni" placeholder="DNI" required />
+    <input type="email" [(ngModel)]="email" name="email" placeholder="Correo electrónico" required />
+    <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña" required minlength="6" />
 
-        <button type="submit">Registrarse</button>
-        <p *ngIf="error" class="error-message">{{ error }}</p>
-        <p *ngIf="mensaje" class="success-message">{{ mensaje }}</p>
-        
+    <!-- Paciente -->
+    <input *ngIf="rolPaciente" type="text" name="obraSocial" [(ngModel)]="obraSocial" placeholder="Obra Social" required />
 
-      <p class="register-link">
-        ¿Ya tenés cuenta? <a routerLink="/login">Ingresá</a>
-      </p>
-    </form>
-  </div>
-  
+    <!-- Especialista -->
+    <div *ngIf="rolEspecialista">
+      <p>Especialidades:</p>
+      <label *ngFor="let esp of especialidades">
+        <input type="checkbox" [value]="esp" (change)="toggleEspecialidad(esp, $event)" />
+        {{ esp }}
+      </label>
+      <input type="text" [(ngModel)]="nuevaEspecialidad" name="nuevaEspecialidad" placeholder="Agregar otra" (keydown.enter)="agregarEspecialidad()" />
+    </div>
+
+    <!-- Imágenes -->
+    <label>Imágenes de perfil:</label>
+    <input type="file" (change)="seleccionarArchivo($event)" multiple accept="image/*" />
+
+    <button type="submit">Registrarse</button>
+
+    <p *ngIf="error" class="error-message">{{ error }}</p>
+    <p *ngIf="mensaje" class="success-message">{{ mensaje }}</p>
+
+    <p class="register-link">
+      ¿Ya tenés cuenta? <a routerLink="/login">Ingresá</a>
+    </p>
+  </form>
+</div>

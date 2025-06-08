@@ -4,14 +4,19 @@
   <form (ngSubmit)="login()">
     <input type="email" [(ngModel)]="email" name="email" placeholder="Correo electrónico" required />
     <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña" required />
-    <button type="submit">Ingresar</button>
+    <button type="submit" [disabled]="loading">Ingresar</button>
 
     <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
   </form>
 
+  <div *ngIf="loading" class="spinner">
+    <img src="assets/informe.gif" alt="Cargando..." />
+  </div>
+
   <div class="testing-buttons">
-    <button (click)="completarTest('test1@mail.com', '12345678')">Usuario Test 1</button>
-    <button (click)="completarTest('test2@mail.com', '12345678')">Usuario Test 2</button>
+    <button (click)="completarTest('paciente@paciente.com', '123456')">Usuario Paciente</button>
+    <button (click)="completarTest('especialista@especialista.com', '123456')">Usuario Especialista</button>
+    <button (click)="completarTest('admin@admin.com', 'admin123')">Usuario Admin</button>
   </div>
 
   <p class="register-link">

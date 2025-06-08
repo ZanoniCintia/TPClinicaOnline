@@ -10,7 +10,6 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 @Component({
   selector: 'app-login',
   standalone: false,
-  
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -18,42 +17,77 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   errorMsg: string = '';
+  loading: boolean = false;
 
   constructor(private router: Router) {}
 
   async login() {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    this.errorMsg = '';
+    this.loading = true;
+
+    const { data: loginData, error } = await supabase.auth.signInWithPassword({
       email: this.email,
       password: this.password,
-      
     });
 
     if (error) {
-      this.errorMsg = error.message.includes('invalid login')
-        ? 'Usuario o contraseña incorrectos'
-        : error.message;
-    } else {
-       
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      const name = userData?.user?.user_metadata?.['name'];
+      this.loading = false;
+      this.errorMsg = 'Usuario o contraseña incorrectos';
+      return;
+    }
 
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    const user = userData?.user;
+    const emailVerificado = user?.email_confirmed_at !== null;
 
-      await supabase
-    .from('logs')
-    .insert({
+    if (!emailVerificado) {
+      this.loading = false;
+      this.errorMsg = 'Debe verificar su correo electrónico antes de ingresar.';
+      return;
+    }
+
+    if (!user?.id) {
+      this.loading = false;
+      this.errorMsg = 'No se pudo obtener la información del usuario.';
+      return;
+    }
+
+    const { data: usuarioDB, error: userQueryError } = await supabase
+      .from('usuarios')
+      .select('rol, estado')
+      .eq('authid', user.id)
+      .single();
+
+    if (userQueryError || !usuarioDB) {
+      this.loading = false;
+      this.errorMsg = 'No se pudo obtener el rol del usuario.';
+      return;
+    }
+
+    if ((usuarioDB.rol === 'especialista' || usuarioDB.rol === 'paciente-especialista') && !usuarioDB.estado) {
+      this.loading = false;
+      this.errorMsg = 'Su cuenta aún no fue habilitada por un administrador.';
+      return;
+    }
+
+    await supabase.from('logs').insert({
       email: this.email,
-      name: name,
-      fecha: new Date().toISOString()
+      fecha: new Date().toISOString(),
+      name: user.user_metadata?.['nombre'] || ''
     });
-      
 
-      this.router.navigate(['home']);
-      
+    this.loading = false;
 
+    if (usuarioDB.rol === 'admin') {
+      this.router.navigate(['/admin']);
+    } else if (usuarioDB.rol === 'paciente') {
+      this.router.navigate(['/home']);
+    } else if (usuarioDB.rol === 'especialista' || usuarioDB.rol === 'paciente-especialista') {
+      this.router.navigate(['/turnos']);
+    } else {
+      this.router.navigate(['/home']);
     }
   }
-
-  
 
   completarTest(email: string, password: string) {
     this.email = email;

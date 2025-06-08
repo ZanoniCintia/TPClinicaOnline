@@ -1,0 +1,59 @@
+<div class="admin-container">
+      <div class="user-info">
+      
+
+      <a class="logout-link" (click)="logout()">logout</a>
+    </div>
+  <h2>Panel de Administración</h2>
+
+  <!-- Spinner -->
+  <div *ngIf="cargando">
+    <img src="assets/informe.gif" alt="Cargando..." width="50" />
+  </div>
+
+  <!-- Tabla de usuarios -->
+  <div *ngIf="!cargando && usuarios.length">
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Nombre</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of usuarios">
+          <td>{{ u.email }}</td>
+          <td>{{ u.nombre || u.name }}</td>
+          <td>{{ u.rol }}</td>
+          <td>{{ u.estado ? 'Activo' : 'Inactivo' }}</td>
+          <td *ngIf="u.rol === 'especialista'">
+            <button (click)="alternarEstado(u)">
+              {{ u.estado ? 'Inhabilitar' : 'Aprobar' }}
+            </button>
+          </td>
+          <td *ngIf="u.rol !== 'especialista'">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Crear nuevo administrador -->
+  <hr />
+  <h3>Crear Usuario Administrador</h3>
+  <form (ngSubmit)="crearAdmin()" #formAdmin="ngForm">
+    <input [(ngModel)]="nuevoAdmin.email" name="email" placeholder="Email" required />
+    <input [(ngModel)]="nuevoAdmin.password" name="password" type="password" placeholder="Contraseña" required minlength="6" />
+    <input [(ngModel)]="nuevoAdmin.nombre" name="nombre" placeholder="Nombre" required />
+    <input [(ngModel)]="nuevoAdmin.apellido" name="apellido" placeholder="Apellido" required />
+    <input [(ngModel)]="nuevoAdmin.edad" name="edad" type="number" placeholder="Edad" required min="0" />
+    <input [(ngModel)]="nuevoAdmin.dni" name="dni" placeholder="DNI" required />
+    <input type="file" (change)="seleccionarAvatar($event)" accept="image/*" />
+    <button type="submit">Crear Admin</button>
+  </form>
+
+  <p *ngIf="error" class="error">{{ error }}</p>
+  <p *ngIf="mensaje" class="success-message">{{ mensaje }}</p>
+</div>

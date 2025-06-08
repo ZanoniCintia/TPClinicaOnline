@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/sala-juegos-zanoni/browser",
+    "public": "dist/tpclinica/browser",
     "ignore": [
       "firebase.json",
       "**/.*",

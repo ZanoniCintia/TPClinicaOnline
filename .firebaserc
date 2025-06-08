@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "saladejuegosfinal"
-  }
+    "default": "clinicaonline-14498",
+    "clinica": "clinicaonline-14498"
+  },
+  "targets": {},
+  "etags": {}
 }
