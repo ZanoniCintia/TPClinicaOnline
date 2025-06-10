@@ -1,10 +1,9 @@
+// login.component.ts (modificado con creación en usuarios si no existe)
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
 @Component({
@@ -58,13 +57,41 @@ export class LoginComponent {
       .eq('authid', user.id)
       .single();
 
+    // Si no existe en la tabla usuarios, lo insertamos
     if (userQueryError || !usuarioDB) {
+      const userMetadata = user.user_metadata;
+      const rol = userMetadata?.['rol'] || 'paciente';
+
+      const { error: insertError } = await supabase.from('usuarios').insert({
+        authid: user.id,
+        email: user.email,
+        name: userMetadata?.['nombre'] || '',
+        apellido: userMetadata?.['apellido'] || '',
+        rol: rol,
+        estado: rol === 'especialista' ? false : true,
+      });
+
+      if (insertError) {
+        this.errorMsg = 'No se pudo completar el registro del usuario';
+        this.loading = false;
+        return;
+      }
+    }
+
+    // Repetimos consulta para tomar datos actualizados
+    const { data: datosActuales, error: err2 } = await supabase
+      .from('usuarios')
+      .select('rol, estado')
+      .eq('authid', user.id)
+      .single();
+
+    if (err2 || !datosActuales) {
       this.loading = false;
       this.errorMsg = 'No se pudo obtener el rol del usuario.';
       return;
     }
 
-    if ((usuarioDB.rol === 'especialista' || usuarioDB.rol === 'paciente-especialista') && !usuarioDB.estado) {
+    if ((datosActuales.rol === 'especialista' || datosActuales.rol === 'paciente-especialista') && !datosActuales.estado) {
       this.loading = false;
       this.errorMsg = 'Su cuenta aún no fue habilitada por un administrador.';
       return;
@@ -78,11 +105,11 @@ export class LoginComponent {
 
     this.loading = false;
 
-    if (usuarioDB.rol === 'admin') {
+    if (datosActuales.rol === 'admin') {
       this.router.navigate(['/admin']);
-    } else if (usuarioDB.rol === 'paciente') {
+    } else if (datosActuales.rol === 'paciente') {
       this.router.navigate(['/home']);
-    } else if (usuarioDB.rol === 'especialista' || usuarioDB.rol === 'paciente-especialista') {
+    } else if (datosActuales.rol === 'especialista' || datosActuales.rol === 'paciente-especialista') {
       this.router.navigate(['/turnos']);
     } else {
       this.router.navigate(['/home']);

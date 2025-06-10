@@ -56,6 +56,16 @@
     <input type="file" (change)="seleccionarArchivo($event)" multiple accept="image/*" />
 
     <button type="submit">Registrarse</button>
+    <!-- Mensaje de éxito -->
+<div *ngIf="mensaje" style="color: green; margin-top: 10px;">
+  {{ mensaje }}
+</div>
+
+<!-- Mensaje de error -->
+<div *ngIf="error" style="color: red; margin-top: 10px;">
+  {{ error }}
+</div>
+
 
     <p class="success-message" *ngIf="mensaje">{{ mensaje }}</p>
     <p class="error-message" *ngIf="error">{{ error }}</p>
