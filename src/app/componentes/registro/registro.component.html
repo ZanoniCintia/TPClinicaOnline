@@ -1,29 +1,54 @@
 <div class="form-container">
-  <h2>Registrarse</h2>
   <form (ngSubmit)="registrarse()">
+    <h2>Registro</h2>
+
+    <input type="text" placeholder="Nombre" [(ngModel)]="nombre" name="nombre" required />
+    <input type="text" placeholder="Apellido" [(ngModel)]="apellido" name="apellido" required />
+    <input type="number" placeholder="Edad" name="edad" [(ngModel)]="edad"  #edadRef="ngModel" required min="0"(blur)="0"
+/>
+<div *ngIf="edadRef.invalid && edadRef.touched" class="error-message">
+  <small *ngIf="edadRef.errors?.['required']">La edad es obligatoria</small>
+  <small *ngIf="edadRef.errors?.['min']">La edad no puede ser negativa</small>
+ <small *ngIf="rolEspecialista && edad !== null && edad < 21">
+  Debe tener al menos 21 años para registrarse como especialista
+</small>
+
+</div>
+    <input type="text" placeholder="DNI" name="dni"  [(ngModel)]="dni" #dniRef="ngModel" required pattern="^[0-9]{8}$" (blur)="0"
+/>
+<div *gIf="dniRef.invalid && dniRef.touched" class="error-message">
+  <small *ngIf="dniRef.errors?.['required']">El DNI es obligatorio</small>
+  <small *ngIf="dniRef.errors?.['pattern']">El DNI debe tener exactamente 8 dígitos</small>
+</div>
+
+    <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required />
+    <input type="password" placeholder="Contraseña" [(ngModel)]="password" name="password" required />
+
     <!-- Roles -->
-    <label><input type="checkbox" [(ngModel)]="rolPaciente" name="rolPaciente" /> Paciente</label>
-    <label><input type="checkbox" [(ngModel)]="rolEspecialista" name="rolEspecialista" /> Especialista</label>
+    <label><input type="checkbox" [(ngModel)]="rolPaciente" name="rolPaciente" (change)="rolEspecialista = rolPaciente ? false : rolEspecialista"/> Paciente
+</label>
 
-    <!-- Datos comunes -->
-    <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre" required />
-    <input type="text" [(ngModel)]="apellido" name="apellido" placeholder="Apellido" required />
-    <input type="number" [(ngModel)]="edad" name="edad" placeholder="Edad" required min="0" />
-    <input type="text" [(ngModel)]="dni" name="dni" placeholder="DNI" required />
-    <input type="email" [(ngModel)]="email" name="email" placeholder="Correo electrónico" required />
-    <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña" required minlength="6" />
+<label><input type="checkbox" [(ngModel)]="rolEspecialista" name="rolEspecialista" (change)="rolPaciente = rolEspecialista ? false : rolPaciente"/> Especialista
+</label>
 
-    <!-- Paciente -->
-    <input *ngIf="rolPaciente" type="text" name="obraSocial" [(ngModel)]="obraSocial" placeholder="Obra Social" required />
+    <!-- Obra social solo si es paciente -->
+    <input *ngIf="rolPaciente" type="text" placeholder="Obra Social" [(ngModel)]="obraSocial" name="obraSocial" />
 
-    <!-- Especialista -->
+    <!-- Especialidades solo si es especialista -->
     <div *ngIf="rolEspecialista">
-      <p>Especialidades:</p>
-      <label *ngFor="let esp of especialidades">
-        <input type="checkbox" [value]="esp" (change)="toggleEspecialidad(esp, $event)" />
-        {{ esp }}
-      </label>
-      <input type="text" [(ngModel)]="nuevaEspecialidad" name="nuevaEspecialidad" placeholder="Agregar otra" (keydown.enter)="agregarEspecialidad()" />
+      <label><strong>Especialidades:</strong></label>
+      <div *ngFor="let esp of especialidades">
+        <input 
+          type="checkbox" 
+          [value]="esp" 
+          (change)="toggleEspecialidad(esp, $event)" 
+          [checked]="especialidadesSeleccionadas.includes(esp)"
+        /> {{ esp }}
+      </div>
+
+      <!-- Agregar nueva especialidad -->
+      <input type="text" [(ngModel)]="nuevaEspecialidad" name="nuevaEspecialidad" placeholder="Nueva especialidad" />
+      <button type="button" (click)="agregarEspecialidad()">Agregar Especialidad</button>
     </div>
 
     <!-- Imágenes -->
@@ -32,11 +57,7 @@
 
     <button type="submit">Registrarse</button>
 
-    <p *ngIf="error" class="error-message">{{ error }}</p>
-    <p *ngIf="mensaje" class="success-message">{{ mensaje }}</p>
-
-    <p class="register-link">
-      ¿Ya tenés cuenta? <a routerLink="/login">Ingresá</a>
-    </p>
+    <p class="success-message" *ngIf="mensaje">{{ mensaje }}</p>
+    <p class="error-message" *ngIf="error">{{ error }}</p>
   </form>
 </div>

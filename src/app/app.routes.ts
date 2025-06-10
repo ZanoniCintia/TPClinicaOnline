@@ -4,6 +4,7 @@ import { HomeComponent } from './componentes/home/home.component';
 import { PageNotFoundComponent } from './componentes/page-not-found/page-not-found.component';
 
 import { RegistroComponent } from './componentes/registro/registro.component';
+import { emailVerificadoGuard } from './guards/email-verificado.guard';
 
 export const routes: Routes = [
     // Si le ponemos 'prefix' nos va a arrojar un error en la consola de redireccion infinita
@@ -25,6 +26,7 @@ export const routes: Routes = [
     {
         path: 'home',
         loadChildren: () => import('./componentes/home/home.module').then(m => m.HomeModule)
+        ,canActivate: [emailVerificadoGuard]
     },
     {
       path: 'admin',
@@ -34,6 +36,7 @@ export const routes: Routes = [
         path: 'consultorios',
         loadChildren: () =>
           import('./consultorios/consultorios.module').then(m => m.ConsultoriosModule)
+         ,canActivate: [emailVerificadoGuard]
       }
     // La ruta comodin debe ir siempre al final
     ,{ path: '**', component: PageNotFoundComponent },
