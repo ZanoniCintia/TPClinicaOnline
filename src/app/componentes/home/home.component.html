@@ -8,8 +8,54 @@
 
     <h1>🏥 Central de turnos</h1>
 
-    <div class="botones-juegos">
-      <!-- botones u opciones -->
+    <div class="solicitar-turno-btn">
+      <button routerLink="/solicitar-turno">Solicitar turno</button>
     </div>
+
+    <div *ngFor="let turno of misTurnos" class="turno-card">
+  <div class="turno-info">
+    <p><strong>🩺 Especialidad:</strong> {{ turno.especialidad }}</p>
+    <p><strong>📅 Fecha:</strong> {{ turno.fecha }}</p>
+    <p><strong>⏰ Hora:</strong> {{ turno.hora }}</p>
+    <p><strong>📌 Estado:</strong> 
+      <span [ngClass]="{
+        'pendiente': turno.estado === 'pendiente',
+        'cancelado': turno.estado === 'cancelado',
+        'confirmado': turno.estado === 'confirmado'
+      }">
+        {{ turno.estado }}
+      </span>
+    </p>
   </div>
+
+  <div class="acciones">
+  
+    <button 
+      *ngIf="turno.estado !== 'cancelado' && turno.estado == 'confirmado'" 
+      (click)="abrirCancelar(turno)"
+    >
+      Cancelar
+    </button>
+
+
+    <button (click)="reprogramarTurno(turno)">
+      Reprogramar
+    </button>
+
+    
+    <button *ngIf="turno.estado !== 'confirmado'" (click)="confirmarTurno(turno)">
+      Confirmar
+    </button>
+  </div>
+</div>
+
+  </div>
+  <app-modal-input
+  *ngIf="mostrarModal"
+  [titulo]="modalTitulo"
+  [descripcion]="modalDescripcion"
+  (aceptar)="onModalAceptar($event)"
+  (cancelar)="onModalCancelar()"
+></app-modal-input>
+
 </div>

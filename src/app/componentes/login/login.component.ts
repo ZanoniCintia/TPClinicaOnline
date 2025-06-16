@@ -57,7 +57,7 @@ export class LoginComponent {
       .eq('authid', user.id)
       .single();
 
-    // Si no existe en la tabla usuarios, lo insertamos
+    // Si no existe en la tabla usuarios, lo inserto
     if (userQueryError || !usuarioDB) {
       const userMetadata = user.user_metadata;
       const rol = userMetadata?.['rol'] || 'paciente';
@@ -120,4 +120,46 @@ export class LoginComponent {
     this.email = email;
     this.password = password;
   }
+
+  //pedido en clase
+  usuariosTest = [
+  {
+    email: 'paciente@paciente.com',
+    password: '123456',
+    avatar: 'https://okhubqbtmacszztmqiki.supabase.co/storage/v1/object/public/avatars//paciente1.png'
+  },
+  {
+    email: 'lucasgastonpicazook@gmail.com',
+    password: '123456',
+    avatar: 'https://okhubqbtmacszztmqiki.supabase.co/storage/v1/object/public/avatars//paciente2.png'
+  },
+  {
+    email: 'nuevo@paciente.com',
+    password: '123456',
+    avatar: 'https://okhubqbtmacszztmqiki.supabase.co/storage/v1/object/public/avatars//paciente3.png'
+  },
+  {
+    email: 'especialista@especialista.com',
+    password: '123456',
+    avatar: 'https://okhubqbtmacszztmqiki.supabase.co/storage/v1/object/public/avatars//doctora.png'
+  },
+  {
+    email: 'xekiye7685@jio1.com',
+    password: '123456',
+    avatar: 'https://okhubqbtmacszztmqiki.supabase.co/storage/v1/object/public/avatars//doctor.jpeg'
+  },
+  {
+    email: 'admin@admin.com',
+    password: 'admin123',
+    avatar: 'https://okhubqbtmacszztmqiki.supabase.co/storage/v1/object/public/avatars//admin.png'
+  }
+];
+
+completarDesdeBoton(usuario: any) {
+  this.email = usuario.email;
+  this.password = usuario.password;
 }
+
+}
+//pedido en clase
+

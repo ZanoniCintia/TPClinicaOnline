@@ -1,0 +1,53 @@
+<div class="form-container">
+  <form (ngSubmit)="registrarse()">
+    <h2>Registro de Especialista</h2>
+
+    <input type="text" placeholder="Nombre" [(ngModel)]="nombre" name="nombre" required />
+    <input type="text" placeholder="Apellido" [(ngModel)]="apellido" name="apellido" required />
+    <input type="number" placeholder="Edad" [(ngModel)]="edad" name="edad" required min="21" />
+
+    <input type="text" placeholder="DNI" [(ngModel)]="dni" name="dni" required pattern="^[0-9]{8}$" />
+
+    <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required />
+    <input type="password" placeholder="Contraseña" [(ngModel)]="password" name="password" required />
+
+    <!-- Especialidades -->
+    <div>
+      <label><strong>Especialidades:</strong></label>
+      <div *ngFor="let esp of especialidades">
+        <input 
+          type="checkbox" 
+          [value]="esp" 
+          (change)="toggleEspecialidad(esp, $event)"
+          [checked]="especialidadesSeleccionadas.includes(esp)"
+        /> {{ esp }}
+      </div>
+
+      <!-- Agregar nueva especialidad -->
+      <input type="text" [(ngModel)]="nuevaEspecialidad" name="nuevaEspecialidad" placeholder="Nueva especialidad" />
+      <button type="button" (click)="agregarEspecialidad()">Agregar Especialidad</button>
+    </div>
+
+    <!-- Imagen -->
+    <label>Imagen de perfil:</label>
+    <input type="file" (change)="seleccionarArchivo($event)" accept="image/*" />
+
+    <!-- captcha -->
+   <app-captcha
+      [siteKey]="'6Lc4OmIrAAAAANLBzwMxzELcV9uhcK9Wsc617p4n'"
+      (captchaResuelto)="resolverCaptcha($event)">
+    </app-captcha>
+
+
+
+    <button type="submit">Registrarse</button>
+
+    
+    <div *ngIf="mensaje" style="color: green; margin-top: 10px;">{{ mensaje }}</div>
+    <div *ngIf="error" style="color: red; margin-top: 10px;">{{ error }}</div>
+
+   
+    <button class="volver-btn" type="button" (click)="router.navigate(['/'])">Volver al inicio</button>
+    
+  </form>
+</div>

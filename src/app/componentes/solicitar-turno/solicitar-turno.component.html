@@ -1,0 +1,65 @@
+<div class="home-container">
+  <div class="content-box">
+    <div class="user-info">
+      <span *ngIf="userName">👤 {{ userName }}</span>
+      <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" class="avatar-img" />
+      <a class="logout-link" (click)="logout()">logout</a>
+    </div>
+
+    <h1>🏥 Central de turnos</h1>
+
+    <div class="form-container">
+      <h2>Solicitar Turno</h2>
+
+      <label>Especialidad:</label>
+<div class="opciones-lista">
+  <button 
+    *ngFor="let esp of especialidades" 
+    (click)="especialidadSeleccionada = esp; cargarEspecialistas()"
+    [class.selected]="especialidadSeleccionada === esp">
+    {{ esp }}
+  </button>
+</div>
+
+
+    <label>Especialista:</label>
+<div class="opciones-lista">
+  <button 
+    *ngFor="let esp of especialistas" 
+    (click)="especialistaSeleccionadoId = esp.id; onEspecialistaChange()"
+    [class.selected]="especialistaSeleccionadoId === esp.id">
+    {{ esp.nombre }} {{ esp.apellido }}
+  </button>
+</div>
+
+      <label>Fecha:</label>
+<div class="fechas-lista">
+  <button 
+    *ngFor="let fecha of fechasDisponibles" 
+    (click)="fechaSeleccionada = fecha; onFechaChange()" 
+    [class.selected]="fechaSeleccionada === fecha">
+    {{ fecha }}
+  </button>
+</div>
+
+   <label>Horario:</label>
+<div class="opciones-lista">
+  <button 
+    *ngFor="let hora of horariosDisponibles" 
+    (click)="horarioSeleccionado = hora"
+    [class.selected]="horarioSeleccionado === hora">
+    {{ hora }}
+  </button>
+</div>
+
+
+      <button class="solicitar-turno-btn" [disabled]="cargando" (click)="solicitarTurno()">
+        <span *ngIf="!cargando">Confirmar Turno</span>
+        <span *ngIf="cargando" class="spinner"></span>
+      </button>
+
+      <p class="mensaje-ok" *ngIf="mensaje">{{ mensaje }}</p>
+      <p class="mensaje-error" *ngIf="error">{{ error }}</p>
+    </div>
+  </div>
+</div>

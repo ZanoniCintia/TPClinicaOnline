@@ -1,0 +1,80 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-image: url('/assets/10523687.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.container {
+  max-width: 500px;
+  margin: 10vh auto;
+  background-color: #e6f4fa;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+  color: #24aceb;
+  margin-bottom: 30px;
+}
+
+.opciones {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.opciones button {
+  background-color: #fff;
+  border: none;
+  border-radius: 15px;
+  padding: 20px;
+  width: 180px;
+  height: 180px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.opciones button:hover {
+  transform: scale(1.05);
+}
+
+.opciones img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+.opciones span {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.volver-btn {
+  margin-top: 2rem;
+  background-color: #2376eb;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.volver-btn:hover {
+  background-color: #24aceb;
+}

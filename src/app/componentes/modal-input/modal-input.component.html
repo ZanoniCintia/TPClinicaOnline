@@ -1,0 +1,12 @@
+<div class="modal-overlay">
+  <div class="modal">
+    <h2>{{ titulo }}</h2>
+    <p>{{ descripcion }}</p>
+    <textarea [(ngModel)]="valor" rows="4" placeholder="Escriba aquí..."></textarea>
+    <div class="botones">
+      <button (click)="confirmar()">Aceptar</button>
+      <button class="cancelar" (click)="cerrar()">Cancelar</button>
+    </div>
+  </div>
+</div>
+

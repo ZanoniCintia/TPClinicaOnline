@@ -1,27 +1,17 @@
-/*body {
-  margin: 0;
-  padding: 0;
+:host {
+  display: block;
+  min-height: 100vh;
   background-image: url('/assets/10523687.jpg');
   background-size: cover;
+  background-repeat: no-repeat;
   background-position: center;
-  font-family: 'Segoe UI', sans-serif;
-}*/
-
-:host{
-    display: block;
-    min-height: 100vh;
-    background-image: url('/assets/10523687.jpg');
-    height: 100vh;
-    width: 100%;
-    background-size:cover;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
+  width: 100%;
+}
 
 .form-container {
   max-width: 400px;
   margin: 10vh auto;
-  background:  #e6f4fa;
+  background: #e6f4fa;
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
@@ -29,7 +19,7 @@
 }
 
 h2 {
-  color: #24aceb; 
+  color: #24aceb;
   margin-bottom: 25px;
 }
 
@@ -47,7 +37,7 @@ input {
 button {
   width: 100%;
   padding: 12px;
-  background-color:  #2376eb; 
+  background-color: #2376eb;
   color: white;
   border: none;
   border-radius: 10px;
@@ -58,7 +48,7 @@ button {
   cursor: pointer;
 
   &:hover {
-    background-color: #24aceb; 
+    background-color: #24aceb;
   }
 }
 
@@ -67,10 +57,10 @@ button {
 
   button {
     margin-top: 10px;
-    background-color:  #24aceb; 
+    background-color: #24aceb;
 
     &:hover {
-      background-color:#2376eb;
+      background-color: #2376eb;
     }
   }
 }
@@ -80,7 +70,7 @@ button {
   font-size: 14px;
 
   a {
-    color: #24aceb; 
+    color: #24aceb;
     text-decoration: none;
     font-weight: bold;
 
@@ -98,7 +88,7 @@ button {
 
 .volver-btn {
   margin-top: 1.5rem;
-  background-color:#2376eb;
+  background-color: #2376eb;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -112,6 +102,7 @@ button {
 .volver-btn:hover {
   background-color: #2376eb;
 }
+
 .spinner {
   margin-top: 20px;
   text-align: center;
@@ -122,3 +113,74 @@ button {
   height: 60px;
 }
 
+/* ACCESOS RÁPIDOS - NUEVO */
+.acceso-rapido {
+  position: absolute;
+  top: 80px;
+  right: 40px;
+  text-align: center;
+
+  h3 {
+    color: #24aceb;
+    margin-bottom: 10px;
+  }
+
+  .boton-usuario {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    cursor: pointer;
+    border: 2px solid #ccc;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+.acceso-rapido {
+  position: absolute;
+  top: 80px;
+  right: 40px;
+  text-align: center;
+
+  h3 {
+    color: #000; // título en negro
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .boton-usuario {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  cursor: pointer;
+  border: 2px solid #ccc;
+
+  
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8); 
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+}

@@ -22,6 +22,24 @@ body, html {
   background-position: center;
   background-repeat: no-repeat;
 }
+.solicitar-turno-btn {
+  background-color: #2376eb;
+  color: white;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.solicitar-turno-btn:hover {
+  background-color: #1a5ed8;
+}
+
 
 .content-box {
   margin-top: 30px; 
@@ -55,4 +73,64 @@ body, html {
   color: #2e27f1;
   cursor: pointer;
   text-decoration: underline;
+}
+.turno-card {
+  background-color: #ffffff;
+  border-radius: 14px;
+  margin: 20px 0;
+  padding: 1rem;
+  text-align: left;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.turno-info p {
+  margin: 5px 0;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.acciones button {
+  background-color: #2376eb;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background 0.3s ease;
+}
+
+.acciones button:hover {
+  background-color: #1a5ed8;
+}
+
+.confirmado {
+  color: green;
+  font-weight: bold;
+}
+.cancelado {
+  color: red;
+  font-weight: bold;
+}
+.pendiente {
+  color: orange;
+  font-weight: bold;
+}
+.pendiente {
+  color: orange;
+  font-weight: bold;
+}
+.cancelado {
+  color: red;
+  font-weight: bold;
+}
+.confirmado{
+  color: green;
+  font-weight: bold;
 }

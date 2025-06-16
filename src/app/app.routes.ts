@@ -37,7 +37,29 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./consultorios/consultorios.module').then(m => m.ConsultoriosModule)
          ,canActivate: [emailVerificadoGuard]
-      }
+    },
+    {
+        path: 'registro-especialista',
+        loadChildren: () =>
+          import('./componentes/registro-especialista/registro-especialista.module').then(m => m.RegistroEspecialistaModule),
+    },
+    {
+       path: 'inicioregistro',
+        loadChildren: () =>
+          import('./componentes/inicioregistro/inicioregistro.module').then(m=>m.InicioregistroModule),
+
+    },
+    {
+       path: 'solicitar-turno',
+        loadChildren: () =>
+          import('./componentes/solicitar-turno/solicitar-turno.module').then(m=>m.SolicitarTurnoModule),
+
+    },
+      {
+    path: 'captcha',
+    loadChildren: () => import('./componentes/captcha/captcha.module').then(m => m.CaptchaModule)
+  }
+
     // La ruta comodin debe ir siempre al final
     ,{ path: '**', component: PageNotFoundComponent },
     

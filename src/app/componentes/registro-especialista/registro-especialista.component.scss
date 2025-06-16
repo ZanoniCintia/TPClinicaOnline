@@ -35,27 +35,17 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+re-captcha {
+  margin-top: 10px;
+  display: block;
+  transform: scale(1);
+  transform-origin: 0 0;
+}
+
 
 .volver-btn:hover {
   background-color: #1453b0;
 }
-.g-recaptcha {
-  margin-top: 15px;
-  transform: scale(1);
-  transform-origin: 0 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-form {
-  overflow: visible !important; /*  por si algo lo oculta */
-}
-
-.form-container {
-  padding-bottom: 20px;
-}
-
 
 
 form {
