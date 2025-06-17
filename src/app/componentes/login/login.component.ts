@@ -110,7 +110,7 @@ export class LoginComponent {
     } else if (datosActuales.rol === 'paciente') {
       this.router.navigate(['/home']);
     } else if (datosActuales.rol === 'especialista' || datosActuales.rol === 'paciente-especialista') {
-      this.router.navigate(['/turnos']);
+      this.router.navigate(['/turnos-especialista']);
     } else {
       this.router.navigate(['/home']);
     }

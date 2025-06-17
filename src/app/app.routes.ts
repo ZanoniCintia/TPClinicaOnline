@@ -62,7 +62,12 @@ export const routes: Routes = [
     {
         path: 'turnos',
         loadChildren: () => import('./componentes/turnos/turnos.module').then(m => m.TurnosModule)
+    },
+    {
+        path: 'turnos-especialista',
+        loadChildren: () => import('./componentes/turnos-especialista/turnos-especialista.module').then(m => m.TurnosEspecialistaModule)
     }
+
 
     // La ruta comodin debe ir siempre al final
     ,{ path: '**', component: PageNotFoundComponent },

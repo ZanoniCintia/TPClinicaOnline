@@ -1,0 +1,59 @@
+<div class="home-container">
+  <div class="content-box">
+    <h2>Mis Turnos (Especialista)</h2>
+
+    <!-- Filtros -->
+    <div class="form-row">
+      <label>Filtrar por especialidad:</label>
+      <input #filtroInput type="text" (input)="filtrar('especialidad', filtroInput.value)" />
+
+    </div>
+    <div class="form-row">
+      <label>Filtrar por paciente:</label>
+      <input #filtroInput type="text" (input)="filtrar('paciente', filtroInput.value)" />
+
+    </div>
+
+    <!-- Tabla de turnos -->
+    <table class="tabla-turnos">
+      <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>Especialidad</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let turno of turnosFiltrados">
+          <td>{{ turno.usuario_paciente?.name }} {{ turno.usuario_paciente?.apellido }}</td>
+          <td>{{ turno.especialidad }}</td>
+          <td>{{ turno.fecha | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ turno.hora }}</td>
+          <td>
+            <span [ngClass]="turno.estado">{{ turno.estado }}</span>
+          </td>
+          <td class="acciones">
+            <button *ngIf="puedeCancelar(turno.estado)" (click)="abrirCancelacion(turno)">Cancelar</button>
+            <button *ngIf="puedeRechazar(turno.estado)" (click)="abrirRechazo(turno)">Rechazar</button>
+            <button *ngIf="puedeAceptar(turno.estado)" (click)="aceptarTurno(turno)">Aceptar</button>
+            <button *ngIf="puedeFinalizar(turno.estado)" (click)="abrirFinalizar(turno)">Finalizar</button>
+            <button *ngIf="turno.resena" (click)="verResena(turno.resena)">Ver Reseña</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Modal para ingreso de motivo o reseña -->
+     <app-modal-input
+      *ngIf="modalVisible"
+
+      [titulo]="modalTitulo"
+      [descripcion]="modalDescripcion"
+      (aceptar)="onModalAceptar($event)"
+      (cancelar)="onModalCancelar()"
+    ></app-modal-input>
+  </div>
+</div>
