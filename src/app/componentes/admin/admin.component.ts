@@ -173,4 +173,9 @@ export class AdminComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
+
+    irATurnos() {
+    this.router.navigate(['/turnos']);
+  }
+
 }

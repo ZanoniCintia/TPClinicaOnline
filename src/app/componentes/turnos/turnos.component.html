@@ -1,0 +1,50 @@
+<div class="home-container">
+  <div class="content-box">
+        <h2>Turnos de la Clínica</h2>
+
+        <!-- Filtro por especialidad -->
+        <label>Filtrar por especialidad:</label>
+        <input #espInput type="text" (input)="filtrar('especialidad', espInput.value)" />
+
+        <!-- Filtro por especialista -->
+        <label>Filtrar por especialista:</label>
+        <input #espDocInput type="text" (input)="filtrar('especialista', espDocInput.value)" />
+
+        <!-- Listado de turnos -->
+        <table>
+        <thead>
+            <tr>
+            <th>Paciente</th>
+            <th>Especialista</th>
+            <th>Especialidad</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let turno of turnosFiltrados">
+            <td>{{ turno.usuario_paciente?.name }} {{ turno.usuario_paciente?.apellido }}</td>
+            <td>{{ turno.usuario_especialista?.name }} {{ turno.usuario_especialista?.apellido }}</td>
+            <td>{{ turno.especialidad }}</td>
+            <td>{{ turno.fecha | date: 'dd/MM/yyyy' }} - {{ turno.hora }}</td>
+            <td>{{ turno.estado }}</td>
+            <td>
+                <button *ngIf="puedeCancelar(turno.estado)" (click)="abrirCancelacion(turno)">
+                Cancelar
+                </button>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</div>
+        <!-- Modal para cancelar -->
+        <app-modal-input
+        *ngIf="mostrarModal"
+        [titulo]="modalTitulo"
+        [descripcion]="modalDescripcion"
+        (aceptar)="onModalAceptar($event)"
+        (cancelar)="onModalCancelar()">
+        </app-modal-input>
+  

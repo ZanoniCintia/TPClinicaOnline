@@ -193,7 +193,7 @@ async confirmarTurno(turno: any) {
 }
 
 async reprogramarTurno(turno: any) {
-  // Simple redirección al componente de solicitud con valores prellenados
+  
   this.router.navigate(['/solicitar-turno'], {
     queryParams: {
       especialidad: turno.especialidad,

@@ -55,10 +55,14 @@ export const routes: Routes = [
           import('./componentes/solicitar-turno/solicitar-turno.module').then(m=>m.SolicitarTurnoModule),
 
     },
-      {
-    path: 'captcha',
-    loadChildren: () => import('./componentes/captcha/captcha.module').then(m => m.CaptchaModule)
-  }
+    {
+        path: 'captcha',
+        loadChildren: () => import('./componentes/captcha/captcha.module').then(m => m.CaptchaModule)
+    },
+    {
+        path: 'turnos',
+        loadChildren: () => import('./componentes/turnos/turnos.module').then(m => m.TurnosModule)
+    }
 
     // La ruta comodin debe ir siempre al final
     ,{ path: '**', component: PageNotFoundComponent },
