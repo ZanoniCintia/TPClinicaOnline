@@ -1,20 +1,22 @@
 <div class="home-container">
   <div class="content-box">
+    <div class="perfil-link">
+      <button (click)="irAMiPerfil()" title="Mi Perfil">
+        👤 Mi Perfil
+      </button>
+    </div>
+
     <h2>Mis Turnos (Especialista)</h2>
 
-    <!-- Filtros -->
     <div class="form-row">
       <label>Filtrar por especialidad:</label>
       <input #filtroInput type="text" (input)="filtrar('especialidad', filtroInput.value)" />
-
     </div>
     <div class="form-row">
       <label>Filtrar por paciente:</label>
       <input #filtroInput type="text" (input)="filtrar('paciente', filtroInput.value)" />
-
     </div>
 
-    <!-- Tabla de turnos -->
     <table class="tabla-turnos">
       <thead>
         <tr>
@@ -36,20 +38,20 @@
             <span [ngClass]="turno.estado">{{ turno.estado }}</span>
           </td>
           <td class="acciones">
-            <button *ngIf="puedeCancelar(turno.estado)" (click)="abrirCancelacion(turno)">Cancelar</button>
-            <button *ngIf="puedeRechazar(turno.estado)" (click)="abrirRechazo(turno)">Rechazar</button>
-            <button *ngIf="puedeAceptar(turno.estado)" (click)="aceptarTurno(turno)">Aceptar</button>
-            <button *ngIf="puedeFinalizar(turno.estado)" (click)="abrirFinalizar(turno)">Finalizar</button>
+            <ng-container *ngIf="puedeVerAcciones(turno.estado)">
+              <button *ngIf="puedeCancelar(turno.estado)" (click)="abrirCancelacion(turno)">Cancelar</button>
+              <button *ngIf="puedeRechazar(turno.estado)" (click)="abrirRechazo(turno)">Rechazar</button>
+              <button *ngIf="puedeAceptar(turno.estado)" (click)="aceptarTurno(turno)">Aceptar</button>
+              <button *ngIf="puedeFinalizar(turno.estado)" (click)="abrirFinalizar(turno)">Finalizar</button>
+            </ng-container>
             <button *ngIf="turno.resena" (click)="verResena(turno.resena)">Ver Reseña</button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <!-- Modal para ingreso de motivo o reseña -->
-     <app-modal-input
+    <app-modal-input
       *ngIf="modalVisible"
-
       [titulo]="modalTitulo"
       [descripcion]="modalDescripcion"
       (aceptar)="onModalAceptar($event)"

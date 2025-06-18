@@ -1,1 +1,76 @@
-<p>miperfil works!</p>
+<div class="home-container">
+  <div class="content-box">
+    <h1>Mi Perfil</h1>
+
+    <!-- Usuario -->
+    <div class="perfil-header">
+      <img [src]="usuario.avatarurl || 'https://okhubqbtmacszztmqiki.supabase.co/storage/v1/object/public/avatars/equipo-medico.png'" alt="Avatar" class="avatar-img" />
+      <div class="perfil-info">
+        <p><strong>Nombre:</strong> {{ usuario.name }} {{ usuario.apellido }}</p>
+        <p><strong>Correo:</strong> {{ usuario.email }}</p>
+        <p><strong>Rol:</strong> {{ usuario.rol }}</p>
+      </div>
+    </div>
+
+    <!-- Especialidades -->
+    <div *ngIf="especialidades.length">
+      <h2>Especialidades</h2>
+      <ul>
+        <li *ngFor="let esp of especialidades">{{ esp.nombre }}</li>
+      </ul>
+    </div>
+
+    <!-- Horarios -->
+    <div *ngIf="horarios.length">
+      <h2>Mis Horarios</h2>
+      <ul class="horario-lista">
+        <li *ngFor="let dia of diasSemana">
+          <div *ngFor="let h of horariosDelDia(dia)">
+            <div *ngIf="!h.editando">
+              <strong>{{ h.dia | titlecase }}</strong> → {{ h.hora_inicio }} a {{ h.hora_fin }}
+              <button (click)="h.editando = true" class="edit-btn">✏️</button>
+              <button (click)="eliminarHorario(h.id)" class="delete-btn">🗑️</button>
+            </div>
+            <div *ngIf="h.editando" class="form-row">
+              <label>Desde:</label>
+              <input type="time" [(ngModel)]="h.hora_inicio" />
+              <label>Hasta:</label>
+              <input type="time" [(ngModel)]="h.hora_fin" />
+              <button (click)="guardarEdicionHorario(h)">💾</button>
+              <button (click)="h.editando = false">❌</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Formulario para agregar horario -->
+    <div class="form-container" style="margin-top: 20px;">
+      <h2>Agregar Horario</h2>
+
+      <div class="form-row">
+        <label>Día:</label>
+        <select [(ngModel)]="nuevoDia">
+          <option *ngFor="let d of diasSemana" [value]="d" [disabled]="estaSeleccionado(d)">
+            {{ d | titlecase }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Desde (24h):</label>
+        <input type="time" [(ngModel)]="nuevaHoraInicio" />
+      </div>
+
+      <div class="form-row">
+        <label>Hasta (24h):</label>
+        <input type="time" [(ngModel)]="nuevaHoraFin" />
+      </div>
+
+      <button class="solicitar-turno-btn" (click)="agregarHorario()">Guardar Horario</button>
+
+      <p class="mensaje-ok" *ngIf="mensaje">{{ mensaje }}</p>
+      <p class="mensaje-error" *ngIf="error">{{ error }}</p>
+    </div>
+  </div>
+</div>

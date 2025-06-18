@@ -1,11 +1,134 @@
-import { Component } from '@angular/core';
+// mi-perfil.component.ts (actualizado con carga/modificación de horarios)
+import { Component, OnInit } from '@angular/core';
+import { createClient } from '@supabase/supabase-js';
+import { environment } from '../../../environments/environment';
+
+const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
 @Component({
-  selector: 'app-miperfil',
-  imports: [],
+  standalone: false,
+  selector: 'app-mi-perfil',
   templateUrl: './miperfil.component.html',
-  styleUrl: './miperfil.component.scss'
+  styleUrls: ['./miperfil.component.scss']
 })
-export class MiperfilComponent {
+export class MiPerfilComponent implements OnInit {
+  usuario: any = {};
+  especialidades: any[] = [];
+  horarios: any[] = [];
 
+  diasSemana = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  nuevoDia = '';
+  nuevaHoraInicio = '';
+  nuevaHoraFin = '';
+  mensaje = '';
+  error = '';
+
+  async ngOnInit() {
+    const { data: { user } } = await supabase.auth.getUser();
+    const { data } = await supabase
+      .from('usuarios')
+      .select('*')
+      .eq('authid', user?.id)
+      .single();
+
+    this.usuario = data;
+
+    const { data: especialidades } = await supabase
+      .from('especialista_especialidad')
+      .select('especialidades(nombre)')
+      .eq('auth_id', user?.id);
+
+    this.especialidades = (especialidades ?? []).map(e => e.especialidades);
+
+    this.cargarHorarios();
+  }
+
+  async cargarHorarios() {
+    const { data } = await supabase
+      .from('horarios')
+      .select('*')
+      .eq('auth_id', this.usuario.authid);
+    this.horarios = data || [];
+  }
+
+  async agregarHorario() {
+    this.mensaje = '';
+    this.error = '';
+
+    if (!this.nuevoDia || !this.nuevaHoraInicio || !this.nuevaHoraFin) {
+      this.error = 'Todos los campos son obligatorios';
+      return;
+    }
+
+    // Validar franja horaria permitida
+    const hIni = parseInt(this.nuevaHoraInicio.split(':')[0], 10);
+    const hFin = parseInt(this.nuevaHoraFin.split(':')[0], 10);
+    if (this.nuevoDia === 'sábado' && (hIni < 8 || hFin > 14)) {
+      this.error = 'Horario fuera del rango permitido para sábado (08 a 14)';
+      return;
+    } else if (this.nuevoDia !== 'sábado' && (hIni < 8 || hFin > 19)) {
+      this.error = 'Horario fuera del rango permitido (08 a 19)';
+      return;
+    }
+
+    // Insertar el nuevo horario
+    const { error } = await supabase.from('horarios').insert({
+      auth_id: this.usuario.authid,
+      dia: this.nuevoDia,
+      hora_inicio: this.nuevaHoraInicio,
+      hora_fin: this.nuevaHoraFin
+    });
+
+    if (error) {
+      this.error = 'Error al guardar el horario';
+    } else {
+      this.mensaje = 'Horario agregado correctamente';
+      this.nuevoDia = '';
+      this.nuevaHoraInicio = '';
+      this.nuevaHoraFin = '';
+      this.cargarHorarios();
+    }
+  }
+
+  async eliminarHorario(horarioId: number) {
+    await supabase.from('horarios').delete().eq('id', horarioId);
+    this.cargarHorarios();
+  }
+
+  async guardarEdicionHorario(horario: any) {
+  this.mensaje = '';
+  this.error = '';
+
+  const hIni = parseInt(horario.hora_inicio.split(':')[0], 10);
+  const hFin = parseInt(horario.hora_fin.split(':')[0], 10);
+
+  if (horario.dia === 'sábado' && (hIni < 8 || hFin > 14)) {
+    this.error = 'Horario fuera del rango permitido para sábado (08 a 14)';
+    return;
+  } else if (horario.dia !== 'sábado' && (hIni < 8 || hFin > 19)) {
+    this.error = 'Horario fuera del rango permitido (08 a 19)';
+    return;
+  }
+
+  const { error } = await supabase
+    .from('horarios')
+    .update({ hora_inicio: horario.hora_inicio, hora_fin: horario.hora_fin })
+    .eq('id', horario.id);
+
+  if (error) {
+    this.error = 'Error al actualizar el horario';
+  } else {
+    horario.editando = false;
+    this.mensaje = 'Horario actualizado correctamente';
+  }
+}
+
+
+  horariosDelDia(dia: string) {
+    return this.horarios.filter(h => h.dia === dia);
+  }
+
+  estaSeleccionado(dia: string): boolean {
+    return this.horarios.some(h => h.dia === dia);
+  }
 }

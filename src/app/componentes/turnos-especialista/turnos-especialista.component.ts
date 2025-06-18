@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: false,
@@ -20,16 +21,15 @@ export class TurnosEspecialistaComponent implements OnInit {
   modalTurno: any = null;
   modalCallback: (input: string) => void = () => {};
 
+
+  constructor(private router: Router) {}
   async ngOnInit() {
     const { data: { session } } = await this.supabase.auth.getSession();
     this.userId = session?.user?.id ?? '';
 
     const { data, error } = await this.supabase
       .from('turnos')
-      .select(`
-        *,
-        usuario_paciente:usuarios!paciente_auth_id(authid, name, apellido)
-      `)
+      .select(`*, usuario_paciente:usuarios!paciente_auth_id(authid, name, apellido)`)
       .eq('especialista_auth_id', this.userId);
 
     if (!error && data) {
@@ -37,32 +37,36 @@ export class TurnosEspecialistaComponent implements OnInit {
       this.turnosFiltrados = data;
     }
   }
-filtrar(tipo: 'especialidad' | 'paciente', valor: string) {
-  if (!valor) {
-    this.turnosFiltrados = this.turnos;
-    return;
+
+  filtrar(tipo: 'especialidad' | 'paciente', valor: string) {
+    if (!valor) {
+      this.turnosFiltrados = this.turnos;
+      return;
+    }
+
+    this.turnosFiltrados = this.turnos.filter(turno =>
+      tipo === 'especialidad'
+        ? turno.especialidad?.toLowerCase().includes(valor.toLowerCase())
+        : (turno.usuario_paciente?.name + ' ' + turno.usuario_paciente?.apellido)
+            .toLowerCase()
+            .includes(valor.toLowerCase())
+    );
   }
 
-  this.turnosFiltrados = this.turnos.filter(turno =>
-    tipo === 'especialidad'
-      ? turno.especialidad?.toLowerCase().includes(valor.toLowerCase())
-      : (turno.usuario_paciente?.name + ' ' + turno.usuario_paciente?.apellido)
-          .toLowerCase()
-          .includes(valor.toLowerCase())
-  );
-}
-
+  puedeVerAcciones(estado: string): boolean {
+    return !['cancelado', 'rechazado', 'realizado'].includes(estado.toLowerCase());
+  }
 
   puedeCancelar(estado: string): boolean {
-    return !['aceptado', 'realizado', 'rechazado'].includes(estado.toLowerCase());
+    return estado.toLowerCase() === 'pendiente';
   }
 
   puedeRechazar(estado: string): boolean {
-    return !['aceptado', 'realizado', 'cancelado'].includes(estado.toLowerCase());
+    return estado.toLowerCase() === 'pendiente';
   }
 
   puedeAceptar(estado: string): boolean {
-    return !['realizado', 'cancelado', 'rechazado'].includes(estado.toLowerCase());
+    return estado.toLowerCase() === 'pendiente';
   }
 
   puedeFinalizar(estado: string): boolean {
@@ -108,6 +112,10 @@ filtrar(tipo: 'especialidad' | 'paciente', valor: string) {
     });
   }
 
+  verResena(resena: string) {
+    this.abrirModal('Reseña del Turno', resena, null, () => {});
+  }
+
   async actualizarTurno(id: string, campos: any) {
     const { error } = await this.supabase
       .from('turnos')
@@ -119,13 +127,16 @@ filtrar(tipo: 'especialidad' | 'paciente', valor: string) {
         .from('turnos')
         .select(`*, usuario_paciente:usuarios!paciente_auth_id(authid, name, apellido)`)
         .eq('especialista_auth_id', this.userId);
-        
+
       this.turnos = data ?? [];
       this.turnosFiltrados = data ?? [];
+    } else {
+      console.error('Error actualizando turno:', error);
     }
   }
 
-  verResena(resena: string) {
-    alert(`📝 Reseña del turno: ${resena}`);
-  }
+  
+irAMiPerfil() {
+  this.router.navigate(['/mi-perfil']);
+}
 }

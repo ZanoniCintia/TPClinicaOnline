@@ -193,3 +193,89 @@ label {
   color: white;
   font-weight: bold;
 }
+.profesionales-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.profesional-card {
+  width: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #fff;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.profesional-card.selected {
+  background-color: #2376eb;
+  color: white;
+  border-color: #2376eb;
+}
+
+.profesional-card:hover {
+  transform: scale(1.03);
+}
+
+.profesional-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.nombre-profesional {
+  font-size: 14px;
+  font-weight: bold;
+}
+.especialidades-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.especialidad-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+}
+
+.especialidad-nombre {
+  font-weight: bold;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.especialidad-card button {
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.especialidad-card button.selected {
+  border-color: #2376eb;
+  background-color: #e0f0ff;
+}
+
+.especialidad-card button img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

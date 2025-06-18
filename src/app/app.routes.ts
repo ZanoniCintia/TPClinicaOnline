@@ -66,7 +66,12 @@ export const routes: Routes = [
     {
         path: 'turnos-especialista',
         loadChildren: () => import('./componentes/turnos-especialista/turnos-especialista.module').then(m => m.TurnosEspecialistaModule)
+    },
+    {
+  path: 'mi-perfil',
+        loadChildren: () => import('./componentes/miperfil/miperfil.module').then(m => m.MiPerfilModule)
     }
+
 
 
     // La ruta comodin debe ir siempre al final
