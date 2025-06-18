@@ -1,0 +1,43 @@
+<!-- miperfilpaciente.component.html -->
+<div class="home-container">
+  <div class="content-box">
+    <h1>Mi Perfil</h1>
+
+    <!-- Datos del paciente -->
+    <div class="perfil-header">
+      <img [src]="usuario.avatarurl || defaultAvatar" alt="Avatar" class="avatar-img" />
+      <img [src]="usuario.imagen_perfil || defaultAvatar" alt="Avatar" class="avatar-img" />
+      <div class="perfil-info">
+        <p><strong>Nombre:</strong> {{ usuario.name }} {{ usuario.apellido }}</p>
+        <p><strong>Correo:</strong> {{ usuario.email }}</p>
+        <p><strong>DNI:</strong> {{ usuario.dni }}</p>
+        <p><strong>Obra Social:</strong> {{ usuario.obra_social || 'No especificada' }}</p>
+      </div>
+    </div>
+</div>
+    <!-- Turnos 
+    <div *ngIf="turnos.length">
+      <h2>Mis Turnos</h2>
+      <ul class="turno-lista">
+        <li *ngFor="let turno of turnos">
+          <div class="turno-card">
+            <p>
+              <strong>Fecha:</strong> {{ turno.fecha }}
+              | <strong>Hora:</strong> {{ turno.hora }}
+            </p>
+            <p>
+              <strong>Profesional:</strong> {{ turno.especialista_email }}
+              | <strong>Especialidad:</strong> {{ turno.especialidad }}
+              | <strong>Estado:</strong> {{ turno.estado }}
+            </p>
+            <button *ngIf="turno.estado === 'pendiente'" (click)="cancelarTurno(turno.id)">Cancelar</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <p *ngIf="mensaje" class="mensaje-ok">{{ mensaje }}</p>
+    <p *ngIf="error" class="mensaje-error">{{ error }}</p>
+  </div>-->
+
+

@@ -51,7 +51,7 @@
       <div class="form-row">
         <label>Día:</label>
         <select [(ngModel)]="nuevoDia">
-          <option *ngFor="let d of diasSemana" [value]="d" [disabled]="estaSeleccionado(d)">
+          <option *ngFor="let d of diasDisponibles" [value]="d">
             {{ d | titlecase }}
           </option>
         </select>

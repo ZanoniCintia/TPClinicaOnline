@@ -1,6 +1,7 @@
 <div class="home-container">
   <div class="content-box">
     <div class="user-info">
+      <button  routerLink="/mi-perfil-paciente">Mi Perfil</button>
       <span *ngIf="userName">👤 {{ userName }}</span>
       <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" class="avatar-img" />
       <a class="logout-link" (click)="logout()">logout</a>

@@ -1,4 +1,3 @@
-// mi-perfil.component.ts (actualizado con carga/modificación de horarios)
 import { Component, OnInit } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
@@ -39,7 +38,6 @@ export class MiPerfilComponent implements OnInit {
       .eq('auth_id', user?.id);
 
     this.especialidades = (especialidades ?? []).map(e => e.especialidades);
-
     this.cargarHorarios();
   }
 
@@ -51,12 +49,23 @@ export class MiPerfilComponent implements OnInit {
     this.horarios = data || [];
   }
 
+  get diasDisponibles(): string[] {
+    return this.diasSemana.filter(d => !this.horarios.some(h => h.dia === d));
+  }
+
   async agregarHorario() {
     this.mensaje = '';
     this.error = '';
 
     if (!this.nuevoDia || !this.nuevaHoraInicio || !this.nuevaHoraFin) {
       this.error = 'Todos los campos son obligatorios';
+      return;
+    }
+
+    // Validar día duplicado
+    const yaExiste = this.horarios.some(h => h.dia === this.nuevoDia);
+    if (yaExiste) {
+      this.error = 'Ya existe un horario registrado para ese día';
       return;
     }
 
@@ -71,7 +80,6 @@ export class MiPerfilComponent implements OnInit {
       return;
     }
 
-    // Insertar el nuevo horario
     const { error } = await supabase.from('horarios').insert({
       auth_id: this.usuario.authid,
       dia: this.nuevoDia,
@@ -96,39 +104,34 @@ export class MiPerfilComponent implements OnInit {
   }
 
   async guardarEdicionHorario(horario: any) {
-  this.mensaje = '';
-  this.error = '';
+    this.mensaje = '';
+    this.error = '';
 
-  const hIni = parseInt(horario.hora_inicio.split(':')[0], 10);
-  const hFin = parseInt(horario.hora_fin.split(':')[0], 10);
+    const hIni = parseInt(horario.hora_inicio.split(':')[0], 10);
+    const hFin = parseInt(horario.hora_fin.split(':')[0], 10);
 
-  if (horario.dia === 'sábado' && (hIni < 8 || hFin > 14)) {
-    this.error = 'Horario fuera del rango permitido para sábado (08 a 14)';
-    return;
-  } else if (horario.dia !== 'sábado' && (hIni < 8 || hFin > 19)) {
-    this.error = 'Horario fuera del rango permitido (08 a 19)';
-    return;
+    if (horario.dia === 'sábado' && (hIni < 8 || hFin > 14)) {
+      this.error = 'Horario fuera del rango permitido para sábado (08 a 14)';
+      return;
+    } else if (horario.dia !== 'sábado' && (hIni < 8 || hFin > 19)) {
+      this.error = 'Horario fuera del rango permitido (08 a 19)';
+      return;
+    }
+
+    const { error } = await supabase
+      .from('horarios')
+      .update({ hora_inicio: horario.hora_inicio, hora_fin: horario.hora_fin })
+      .eq('id', horario.id);
+
+    if (error) {
+      this.error = 'Error al actualizar el horario';
+    } else {
+      horario.editando = false;
+      this.mensaje = 'Horario actualizado correctamente';
+    }
   }
-
-  const { error } = await supabase
-    .from('horarios')
-    .update({ hora_inicio: horario.hora_inicio, hora_fin: horario.hora_fin })
-    .eq('id', horario.id);
-
-  if (error) {
-    this.error = 'Error al actualizar el horario';
-  } else {
-    horario.editando = false;
-    this.mensaje = 'Horario actualizado correctamente';
-  }
-}
-
 
   horariosDelDia(dia: string) {
     return this.horarios.filter(h => h.dia === dia);
-  }
-
-  estaSeleccionado(dia: string): boolean {
-    return this.horarios.some(h => h.dia === dia);
   }
 }

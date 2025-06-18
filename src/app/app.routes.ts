@@ -68,8 +68,12 @@ export const routes: Routes = [
         loadChildren: () => import('./componentes/turnos-especialista/turnos-especialista.module').then(m => m.TurnosEspecialistaModule)
     },
     {
-  path: 'mi-perfil',
-        loadChildren: () => import('./componentes/miperfil/miperfil.module').then(m => m.MiPerfilModule)
+      path: 'mi-perfil',
+            loadChildren: () => import('./componentes/miperfil/miperfil.module').then(m => m.MiPerfilModule)
+    },
+    {
+      path: 'mi-perfil-paciente',
+            loadChildren: () => import('./componentes/miperfilpaciente/miperfilpaciente.module').then(m => m.MiPerfilPacienteModule)
     }
 
 
