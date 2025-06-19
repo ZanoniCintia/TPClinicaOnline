@@ -74,7 +74,12 @@ export const routes: Routes = [
     {
       path: 'mi-perfil-paciente',
             loadChildren: () => import('./componentes/miperfilpaciente/miperfilpaciente.module').then(m => m.MiPerfilPacienteModule)
+    },
+    {
+      path: 'admin-turno',
+      loadChildren: () => import('./componentes/solicitar-turno-admin/solicitar-turno-admin.module').then(m => m.AdminSolicitarTurnoModule)
     }
+
 
 
 

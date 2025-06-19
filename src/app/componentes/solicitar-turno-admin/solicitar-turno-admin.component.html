@@ -1,0 +1,108 @@
+<div class="home-container">
+  <div class="content-box">
+    <div class="user-info">
+      <span *ngIf="userName">👤 {{ userName }}</span>
+      <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" class="avatar-img" />
+      <a class="logout-link" (click)="logout()">logout</a>
+    </div>
+
+    <h1>🏥 Central de turnos</h1>
+
+    <div class="form-container">
+      <h2>Solicitar Turno</h2>
+
+      <label>Profesional:</label>
+      <div class="profesionales-grid">
+        <button
+          *ngFor="let esp of especialistas"
+          (click)="especialistaSeleccionadoId = esp.authid; profesionalSeleccionado = esp; especialidadSeleccionada = ''; especialidadSeleccionadaId = ''; cargarEspecialidadesDelProfesional()"
+          (click)="seleccionarProfesional(esp)"
+
+          [class.selected]="especialistaSeleccionadoId === esp.authid"
+          class="profesional-card"
+        >
+          <img [src]="esp.avatarurl || 'https://via.placeholder.com/80'" alt="Foto" />
+          <div class="nombre-profesional">{{ esp.name }} {{ esp.apellido }}</div>
+        </button>
+      </div>
+
+      <div *ngIf="especialidades.length">
+        <label>Especialidades:</label>
+        <div class="especialidades-grid">
+          <div *ngFor="let esp of especialidades" class="especialidad-card">
+            <div class="especialidad-nombre">{{ esp.nombre }}</div>
+            <button
+              (click)="especialidadSeleccionada = esp.nombre; especialidadSeleccionadaId = esp.id; cargarDiasDelEspecialista()"
+              [class.selected]="especialidadSeleccionadaId === esp.id"
+            >
+              <img
+                [src]="esp.imagen || 'https://okhubqbtmacszztmqiki.supabase.co/storage/v1/object/public/avatars/equipo-medico.png'"
+                alt="Icono"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Días disponibles -->
+      <div *ngIf="diasConTurnos.length">
+        <label>Día:</label>
+        <div class="opciones-lista">
+          <button 
+            *ngFor="let dia of diasConTurnos" 
+            (click)="onDiaSeleccionado(dia)"
+            [class.selected]="diaSeleccionado === dia">
+            {{ dia | titlecase }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Fechas -->
+      <label *ngIf="fechasDisponibles.length">Fecha:</label>
+      <div class="fechas-lista">
+        <button 
+          *ngFor="let fecha of fechasDisponibles" 
+          (click)="fechaSeleccionada = fecha; cargarHorariosDisponibles()" 
+          [class.selected]="fechaSeleccionada === fecha">
+          {{ fecha | date: 'dd/MM/yyyy' }}
+        </button>
+      </div>
+
+      <!-- Horarios disponibles -->
+     <label *ngIf="horariosDisponibles.length">Horarios disponibles:</label>
+        <div class="fechas-lista" *ngIf="horariosDisponibles.length">
+        <button
+            *ngFor="let h of horariosDisponibles"
+            [disabled]="h.ocupado"
+            [class.selected]="horarioSeleccionado === h.hora"
+            (click)="horarioSeleccionado = h.hora"
+        >
+            {{ h.hora }}
+        </button>
+        </div>
+
+        <!-- SOLO si es admin, muestra el selector de paciente -->
+<div *ngIf="esAdmin" class="form-row">
+  <label>Paciente:</label>
+  <select [(ngModel)]="pacienteSeleccionadoId">
+    <option value="" disabled selected>Seleccione un paciente</option>
+    <option *ngFor="let p of pacientesDisponibles" [value]="p.authid">
+      {{ p.name }} {{ p.apellido }} - {{ p.email }}
+    </option>
+  </select>
+</div>
+
+
+
+      <!-- Confirmación -->
+      <button class="solicitar-turno-btn" [disabled]="cargando" (click)="solicitarTurno()">
+        <span *ngIf="!cargando">Confirmar Turno</span>
+        <span *ngIf="cargando" class="spinner"></span>
+      </button>
+
+      <p class="mensaje-ok" *ngIf="mensaje">{{ mensaje }}</p>
+      <p class="mensaje-error" *ngIf="error">{{ error }}</p>
+    </div>
+  </div>
+</div>
+

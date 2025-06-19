@@ -1,7 +1,7 @@
 <div class="home-container">
   <div class="content-box">
         <h2>Turnos de la Clínica</h2>
-
+        <button  routerLink="/admin-turno">Nuevo Turno</button>
         <!-- Filtro por especialidad -->
         <label>Filtrar por especialidad:</label>
         <input #espInput type="text" (input)="filtrar('especialidad', espInput.value)" />
