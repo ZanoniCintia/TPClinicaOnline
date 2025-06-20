@@ -4,11 +4,13 @@ import { MiPerfilComponent } from './miperfil.component';
 import { MiPerfilRoutingModule } from './miperfil-routing.module';
 import { FormsModule } from '@angular/forms';
 
+
 @NgModule({
   declarations: [
     MiPerfilComponent
   ],
   imports: [
+    
     CommonModule,
     FormsModule,
     MiPerfilRoutingModule

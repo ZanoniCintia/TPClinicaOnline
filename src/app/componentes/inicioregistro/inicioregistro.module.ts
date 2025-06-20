@@ -4,9 +4,11 @@ import { InicioregistroComponent } from './inicioregistro.component';
 import { InicioregistroRoutingModule } from './inicioregistro-routing.module';
 import { RouterModule } from '@angular/router';
 
+
 @NgModule({
   declarations: [InicioregistroComponent],
   imports: [
+ 
     CommonModule,
     RouterModule,
     InicioregistroRoutingModule

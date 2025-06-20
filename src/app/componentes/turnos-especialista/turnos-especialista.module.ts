@@ -5,9 +5,11 @@ import { TurnosEspecialistaComponent } from './turnos-especialista.component';
 import { TurnosEspecialistaRoutingModule } from './turnos-especialista-routing.module';
 import { ModalInputModule } from '../modal-input/modal-input.module';
 
+
 @NgModule({
   declarations: [TurnosEspecialistaComponent],
   imports: [
+
     CommonModule,
     FormsModule,
     TurnosEspecialistaRoutingModule,

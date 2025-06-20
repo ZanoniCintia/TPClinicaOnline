@@ -7,10 +7,12 @@ import { RegistroRoutingModule } from './registro-routing.module';
 import { RecaptchaModule } from 'ng-recaptcha';
 import { RecaptchaFormsModule } from 'ng-recaptcha';
 import { CaptchaModule } from '../captcha/captcha.module'; 
+
+
 @NgModule({
   declarations: [RegistroComponent],
   imports: [
-    
+  
     CaptchaModule,
     RecaptchaFormsModule ,
     RecaptchaModule ,

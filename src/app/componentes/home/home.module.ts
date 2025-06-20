@@ -6,10 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ModalInputModule } from "../modal-input/modal-input.module";
 
+
 @NgModule({
   declarations: [HomeComponent],
   imports: [
-    
+
     CommonModule,
     FormsModule,
     RouterModule,

@@ -6,6 +6,11 @@
     </div>
   <h2>Panel de Administración</h2>
 
+  <button (click)="exportarUsuariosAExcel()" class="solicitar-turno-btn">
+  📁 Exportar usuarios a Excel
+</button>
+
+
   <!-- Spinner -->
   <div *ngIf="cargando">
     <img src="assets/informe.gif" alt="Cargando..." width="50" />

@@ -15,8 +15,6 @@ export class SolicitarTurnoComponent implements OnInit {
   especialidades: any[] = [];
   horariosDisponibles: { hora: string, ocupado: boolean }[] = [];
 
-  horariosOcupados: string[] = [];
-
   especialistaSeleccionadoId = '';
   profesionalSeleccionado: any = null;
   especialidadSeleccionada = '';
@@ -30,6 +28,8 @@ export class SolicitarTurnoComponent implements OnInit {
   avatarUrl = '';
   esAdmin = false;
   pacientesDisponibles: any[] = [];
+  pacientesFiltrados: any[] = [];
+  filtroPaciente = '';
   pacienteSeleccionadoId = '';
   pacienteId = '';
   fechasDisponibles: string[] = [];
@@ -38,19 +38,21 @@ export class SolicitarTurnoComponent implements OnInit {
   diaSeleccionado = '';
 
   async ngOnInit() {
-    const { data: { user } } = await supabase.auth.getUser();
-    this.pacienteEmail = user?.email ?? '';
-    this.pacienteId = user?.id ?? '';
-    const rol = user?.user_metadata?.['role'] || '';
-    this.esAdmin = rol === 'admin';
+     const { data: { user } } = await supabase.auth.getUser();
+  this.pacienteEmail = user?.email ?? '';
+  this.pacienteId = user?.id ?? '';
 
-    if (this.esAdmin) {
-      const { data: pacientes } = await supabase
-        .from('usuarios')
-        .select('authid, name, apellido, email')
-        .eq('rol', 'paciente');
-      this.pacientesDisponibles = pacientes ?? [];
-    }
+  const rol = user?.user_metadata?.['role'] || '';
+  this.esAdmin = rol === 'admin';
+
+  
+  const { data: pacientes } = await supabase
+    .from('usuarios')
+    .select('authid, name, apellido, email')
+    .eq('rol', 'paciente');
+
+  this.pacientesDisponibles = pacientes ?? [];
+  this.pacientesFiltrados = [...this.pacientesDisponibles];
 
     if (user) {
       this.userName = user.user_metadata?.['name'] || 'Usuario';
@@ -130,7 +132,8 @@ export class SolicitarTurnoComponent implements OnInit {
       .from('horarios')
       .select('dia')
       .eq('auth_id', this.especialistaSeleccionadoId)
-      .eq('especialidad_id', this.especialidadSeleccionadaId);
+      .eq('especialidad_id', this.especialidadSeleccionadaId); // ← ESTE ES CLAVE
+
 
     if (error) {
       this.error = 'Error al cargar días disponibles';
@@ -205,9 +208,6 @@ export class SolicitarTurnoComponent implements OnInit {
 
     const horasOcupadas = turnosTomados?.map(t => t.hora.slice(0, 5)) || [];
 
-    
-
-
     const generarIntervalos = (inicio: string, fin: string) => {
       const resultado = [];
       let [h, m] = inicio.split(':').map(Number);
@@ -222,22 +222,18 @@ export class SolicitarTurnoComponent implements OnInit {
           m = 0;
         }
       }
-
       return resultado;
     };
 
-   let posibles: string[] = [];
-rangos.forEach(r => {
-  posibles.push(...generarIntervalos(r.hora_inicio, r.hora_fin));
-});
+    let posibles: string[] = [];
+    rangos.forEach(r => {
+      posibles.push(...generarIntervalos(r.hora_inicio, r.hora_fin));
+    });
 
-// Genera objetos con `hora` y si está ocupada o no
-this.horariosDisponibles = posibles.map(hora => ({
-  hora,
-  ocupado: horasOcupadas.includes(hora)
-}));
-
-
+    this.horariosDisponibles = posibles.map(hora => ({
+      hora,
+      ocupado: horasOcupadas.includes(hora)
+    }));
   }
 
   async solicitarTurno() {
@@ -287,15 +283,15 @@ this.horariosDisponibles = posibles.map(hora => ({
   }
 
   onFechaSeleccionada(fecha: string) {
-  this.fechaSeleccionada = fecha;
-  this.horarioSeleccionado = '';
-  this.cargarHorariosDisponibles(); // Refresca al instante
-}
+    this.fechaSeleccionada = fecha;
+    this.horarioSeleccionado = '';
+    this.cargarHorariosDisponibles();
+  }
 
-getNombrePacienteSeleccionado(): string {
-  const paciente = this.pacientesDisponibles.find(p => p.authid === this.pacienteSeleccionadoId);
-  return paciente ? `${paciente.name} ${paciente.apellido}` : '';
-}
-
-
+  filtrarPacientes() {
+    const texto = this.filtroPaciente.toLowerCase();
+    this.pacientesFiltrados = this.pacientesDisponibles.filter(p =>
+      `${p.name} ${p.apellido} ${p.email}`.toLowerCase().includes(texto)
+    );
+  }
 }

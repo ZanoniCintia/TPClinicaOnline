@@ -4,9 +4,11 @@ import { SolicitarTurnoComponent } from './solicitar-turno-admin.component';
 import { FormsModule } from '@angular/forms';
 import { AdminSolicitarTurnoRoutingModule } from './solicitar-turno-admin-routing.module';
 
+
 @NgModule({
   declarations: [SolicitarTurnoComponent],
   imports: [
+   
     CommonModule,
     FormsModule,
     AdminSolicitarTurnoRoutingModule

@@ -5,9 +5,11 @@ import { TurnosRoutingModule } from './turnos-routing.module';
 import { TurnosComponent } from './turnos.component';
 import { ModalInputModule } from "../modal-input/modal-input.module";
 
+
 @NgModule({
   declarations: [TurnosComponent],
   imports: [
+
     CommonModule,
     FormsModule,
     TurnosRoutingModule,

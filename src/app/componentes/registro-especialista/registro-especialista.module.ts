@@ -7,9 +7,11 @@ import { CaptchaModule } from '../captcha/captcha.module';
 import { RegistroEspecialistaRoutingModule } from './registro-especialista-routing.module';
 import { RegistroEspecialistaComponent } from './registro-especialista.component';
 
+
 @NgModule({
   declarations: [RegistroEspecialistaComponent],
   imports: [
+   
     CaptchaModule,
     CommonModule,
     FormsModule,

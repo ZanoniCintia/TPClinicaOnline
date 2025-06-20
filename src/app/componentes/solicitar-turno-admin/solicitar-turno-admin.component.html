@@ -1,3 +1,4 @@
+<!-- corregido: solicitar-turno-admin.component.html -->
 <div class="home-container">
   <div class="content-box">
     <div class="user-info">
@@ -6,7 +7,7 @@
       <a class="logout-link" (click)="logout()">logout</a>
     </div>
 
-    <h1>🏥 Central de turnos</h1>
+    <h1>🏥 Central de turnos Admin</h1>
 
     <div class="form-container">
       <h2>Solicitar Turno</h2>
@@ -15,9 +16,7 @@
       <div class="profesionales-grid">
         <button
           *ngFor="let esp of especialistas"
-          (click)="especialistaSeleccionadoId = esp.authid; profesionalSeleccionado = esp; especialidadSeleccionada = ''; especialidadSeleccionadaId = ''; cargarEspecialidadesDelProfesional()"
           (click)="seleccionarProfesional(esp)"
-
           [class.selected]="especialistaSeleccionadoId === esp.authid"
           class="profesional-card"
         >
@@ -44,6 +43,32 @@
         </div>
       </div>
 
+<!-- Filtro visible para admin SIEMPRE -->
+<!-- Campo de búsqueda -->
+<div class="form-row">
+  <label>Buscar paciente:</label>
+  <input
+    type="text"
+    placeholder="Nombre o correo"
+    [(ngModel)]="filtroPaciente"
+    (input)="filtrarPacientes()"
+  />
+</div>
+
+<!-- Selector -->
+<div class="form-row">
+  <label>Paciente:</label>
+  <select [(ngModel)]="pacienteSeleccionadoId">
+    <option value="">Seleccioná un paciente</option>
+    <option *ngFor="let p of pacientesFiltrados" [value]="p.authid">
+      {{ p.name }} {{ p.apellido }} - {{ p.email }}
+    </option>
+  </select>
+</div>
+
+
+
+
       <!-- Días disponibles -->
       <div *ngIf="diasConTurnos.length">
         <label>Día:</label>
@@ -57,42 +82,30 @@
         </div>
       </div>
 
-      <!-- Fechas -->
+      <!-- Fechas disponibles -->
       <label *ngIf="fechasDisponibles.length">Fecha:</label>
       <div class="fechas-lista">
         <button 
           *ngFor="let fecha of fechasDisponibles" 
-          (click)="fechaSeleccionada = fecha; cargarHorariosDisponibles()" 
+          (click)="onFechaSeleccionada(fecha)"
           [class.selected]="fechaSeleccionada === fecha">
           {{ fecha | date: 'dd/MM/yyyy' }}
         </button>
       </div>
 
       <!-- Horarios disponibles -->
-     <label *ngIf="horariosDisponibles.length">Horarios disponibles:</label>
-        <div class="fechas-lista" *ngIf="horariosDisponibles.length">
+      <label *ngIf="horariosDisponibles.length">Horarios disponibles:</label>
+      <div class="fechas-lista" *ngIf="horariosDisponibles.length">
         <button
-            *ngFor="let h of horariosDisponibles"
-            [disabled]="h.ocupado"
-            [class.selected]="horarioSeleccionado === h.hora"
-            (click)="horarioSeleccionado = h.hora"
+          *ngFor="let h of horariosDisponibles"
+          [disabled]="h.ocupado"
+          [class.selected]="horarioSeleccionado === h.hora"
+          [class.ocupado]="h.ocupado"
+          (click)="horarioSeleccionado = h.hora"
         >
-            {{ h.hora }}
+          {{ h.hora }}
         </button>
-        </div>
-
-        <!-- SOLO si es admin, muestra el selector de paciente -->
-<div *ngIf="esAdmin" class="form-row">
-  <label>Paciente:</label>
-  <select [(ngModel)]="pacienteSeleccionadoId">
-    <option value="" disabled selected>Seleccione un paciente</option>
-    <option *ngFor="let p of pacientesDisponibles" [value]="p.authid">
-      {{ p.name }} {{ p.apellido }} - {{ p.email }}
-    </option>
-  </select>
-</div>
-
-
+      </div>
 
       <!-- Confirmación -->
       <button class="solicitar-turno-btn" [disabled]="cargando" (click)="solicitarTurno()">
@@ -105,4 +118,3 @@
     </div>
   </div>
 </div>
-

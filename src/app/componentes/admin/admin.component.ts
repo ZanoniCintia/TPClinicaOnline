@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { CommonModule } from '@angular/common';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 
 @Component({
   standalone: false,
@@ -39,6 +42,7 @@ export class AdminComponent implements OnInit {
     this.router = router;
     this.supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   }
+
 
   async ngOnInit() {
     await this.cargarUsuarios();
@@ -177,5 +181,32 @@ export class AdminComponent implements OnInit {
     irATurnos() {
     this.router.navigate(['/turnos']);
   }
+
+  exportarUsuariosAExcel() {
+  if (!this.usuarios || this.usuarios.length === 0) {
+    this.error = 'No hay usuarios para exportar.';
+    return;
+  }
+
+  // Convertir los datos a formato plano si es necesario
+  const usuariosLimpios = this.usuarios.map(u => ({
+    Nombre: u.nombre,
+    Apellido: u.apellido,
+    Email: u.email,
+    DNI: u.dni,
+    Edad: u.edad,
+    Rol: u.rol,
+    Estado: u.estado ? 'Activo' : 'Inactivo'
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(usuariosLimpios);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuarios');
+
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(blob, `usuarios_${new Date().toISOString().slice(0, 10)}.xlsx`);
+}
+
 
 }

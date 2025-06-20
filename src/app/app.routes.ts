@@ -16,21 +16,21 @@ export const routes: Routes = [
       {
         path: 'login',
         loadChildren: () =>
-          import('./componentes/login/login.module').then(m => m.LoginModule),
+          import('./componentes/login/login.module').then(m => m.LoginModule),data: { animation: 'AdminPage' },
       },
       {
         path: 'registro',
         loadChildren: () =>
-          import('./componentes/registro/registro.module').then(m => m.RegistroModule),
+          import('./componentes/registro/registro.module').then(m => m.RegistroModule),data: { animation: 'AdminPage' },
       },
     {
         path: 'home',
-        loadChildren: () => import('./componentes/home/home.module').then(m => m.HomeModule)
+        loadChildren: () => import('./componentes/home/home.module').then(m => m.HomeModule),data: { animation: 'AdminPage' }
         ,canActivate: [emailVerificadoGuard]
     },
     {
       path: 'admin',
-      loadChildren: () => import('./componentes/admin/admin.module').then(m => m.AdminModule)
+      loadChildren: () => import('./componentes/admin/admin.module').then(m => m.AdminModule),data: { animation: 'AdminPage' },
     },
     {
         path: 'consultorios',
@@ -41,18 +41,18 @@ export const routes: Routes = [
     {
         path: 'registro-especialista',
         loadChildren: () =>
-          import('./componentes/registro-especialista/registro-especialista.module').then(m => m.RegistroEspecialistaModule),
+          import('./componentes/registro-especialista/registro-especialista.module').then(m => m.RegistroEspecialistaModule),data: { animation: 'AdminPage' },
     },
     {
        path: 'inicioregistro',
         loadChildren: () =>
-          import('./componentes/inicioregistro/inicioregistro.module').then(m=>m.InicioregistroModule),
+          import('./componentes/inicioregistro/inicioregistro.module').then(m=>m.InicioregistroModule),data: { animation: 'AdminPage' },
 
     },
     {
        path: 'solicitar-turno',
         loadChildren: () =>
-          import('./componentes/solicitar-turno/solicitar-turno.module').then(m=>m.SolicitarTurnoModule),
+          import('./componentes/solicitar-turno/solicitar-turno.module').then(m=>m.SolicitarTurnoModule),data: { animation: 'AdminPage' },
 
     },
     {
@@ -61,23 +61,23 @@ export const routes: Routes = [
     },
     {
         path: 'turnos',
-        loadChildren: () => import('./componentes/turnos/turnos.module').then(m => m.TurnosModule)
+        loadChildren: () => import('./componentes/turnos/turnos.module').then(m => m.TurnosModule),data: { animation: 'AdminPage' }
     },
     {
         path: 'turnos-especialista',
-        loadChildren: () => import('./componentes/turnos-especialista/turnos-especialista.module').then(m => m.TurnosEspecialistaModule)
+        loadChildren: () => import('./componentes/turnos-especialista/turnos-especialista.module').then(m => m.TurnosEspecialistaModule),data: { animation: 'AdminPage' }
     },
     {
       path: 'mi-perfil',
-            loadChildren: () => import('./componentes/miperfil/miperfil.module').then(m => m.MiPerfilModule)
+            loadChildren: () => import('./componentes/miperfil/miperfil.module').then(m => m.MiPerfilModule),data: { animation: 'AdminPage' }
     },
     {
       path: 'mi-perfil-paciente',
-            loadChildren: () => import('./componentes/miperfilpaciente/miperfilpaciente.module').then(m => m.MiPerfilPacienteModule)
+            loadChildren: () => import('./componentes/miperfilpaciente/miperfilpaciente.module').then(m => m.MiPerfilPacienteModule),data: { animation: 'AdminPage' }
     },
     {
       path: 'admin-turno',
-      loadChildren: () => import('./componentes/solicitar-turno-admin/solicitar-turno-admin.module').then(m => m.AdminSolicitarTurnoModule)
+      loadChildren: () => import('./componentes/solicitar-turno-admin/solicitar-turno-admin.module').then(m => m.AdminSolicitarTurnoModule),data: { animation: 'AdminPage' }
     }
 
 
