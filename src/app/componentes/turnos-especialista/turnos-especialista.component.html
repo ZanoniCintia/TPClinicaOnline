@@ -1,5 +1,8 @@
 <div class="home-container">
   <div class="content-box">
+    <div *ngIf="mensaje" class="mensaje-ok">{{ mensaje }}</div>
+    <div *ngIf="errorMensaje" class="mensaje-error">{{ errorMensaje }}</div>
+
     <div class="perfil-link">
       <button (click)="irAMiPerfil()" title="Mi Perfil">
         👤 Mi Perfil
@@ -7,15 +10,12 @@
     </div>
 
     <h2>Mis Turnos (Especialista)</h2>
+<div class="form-row">
+  <label>Buscar:</label>
+  <input type="text" #buscarInput (input)="filtrarGlobal(buscarInput.value)" placeholder="Buscar por paciente, especialidad o historia clínica..." />
+</div>
 
-    <div class="form-row">
-      <label>Filtrar por especialidad:</label>
-      <input #filtroInput type="text" (input)="filtrar('especialidad', filtroInput.value)" />
-    </div>
-    <div class="form-row">
-      <label>Filtrar por paciente:</label>
-      <input #filtroInput type="text" (input)="filtrar('paciente', filtroInput.value)" />
-    </div>
+
 
     <table class="tabla-turnos">
       <thead>
@@ -37,25 +37,57 @@
           <td>
             <span [ngClass]="turno.estado">{{ turno.estado }}</span>
           </td>
-          <td class="acciones">
-            <ng-container *ngIf="puedeVerAcciones(turno.estado)">
-              <button *ngIf="puedeCancelar(turno.estado)" (click)="abrirCancelacion(turno)">Cancelar</button>
-              <button *ngIf="puedeRechazar(turno.estado)" (click)="abrirRechazo(turno)">Rechazar</button>
-              <button *ngIf="puedeAceptar(turno.estado)" (click)="aceptarTurno(turno)">Aceptar</button>
-              <button *ngIf="puedeFinalizar(turno.estado)" (click)="abrirFinalizar(turno)">Finalizar</button>
-            </ng-container>
-            <button *ngIf="turno.resena" (click)="verResena(turno.resena)">Ver Reseña</button>
-          </td>
+    <td class="acciones">
+  <ng-container *ngIf="puedeVerAcciones(turno.estado)">
+    <button *ngIf="puedeCancelar(turno.estado)" (click)="abrirCancelacion(turno)">Cancelar</button>
+    <button *ngIf="puedeRechazar(turno.estado)" (click)="abrirRechazo(turno)">Rechazar</button>
+    <button *ngIf="puedeAceptar(turno.estado)" (click)="aceptarTurno(turno)">Aceptar</button>
+    <button *ngIf="puedeFinalizar(turno.estado)" (click)="abrirFinalizar(turno)">Finalizar</button>
+  </ng-container>
+
+  <div *ngIf="turno.estado === 'realizado'" class="botonera-hc">
+    <button *ngIf="turno.resena" (click)="verResena(turno.resena)">Ver Reseña</button>
+
+    <button *ngIf="!tieneHistoriaClinica(turno.id)" (click)="abrirModalHistoriaClinica(turno)">
+      ➕ Cargar Historia Clínica
+    </button>
+
+    <button *ngIf="tieneHistoriaClinica(turno.id)" (click)="verHistoriaClinica(turno)">
+      🗂 Ver Historia Clínica
+    </button>
+  </div>
+</td>
+
+
         </tr>
       </tbody>
     </table>
 
-    <app-modal-input
+    <!-- MODAL HISTORIA CLINICA -->
+   <app-modal-input
+  *ngIf="modalAbierto"
+  [modoHistoriaClinica]="modoHistoriaClinica"
+  [soloLectura]="soloLectura"
+  [titulo]="'Historia Clínica'"
+  [descripcion]="'Detalles registrados para el turno'"
+  [altura]="modalHistoriaData?.altura"
+  [peso]="modalHistoriaData?.peso"
+  [temperatura]="modalHistoriaData?.temperatura"
+  [presion]="modalHistoriaData?.presion"
+  [datosDinamicos]="modalHistoriaData?.datosDinamicos"
+  (cerrar)="cerrarModal()"
+  (guardar)="guardarHistoriaClinica($event)">
+</app-modal-input>
+
+
+    <!-- MODAL TEXTO ORIGINAL -->
+    <app-modal-input 
       *ngIf="modalVisible"
       [titulo]="modalTitulo"
       [descripcion]="modalDescripcion"
       (aceptar)="onModalAceptar($event)"
-      (cancelar)="onModalCancelar()"
-    ></app-modal-input>
+      (cancelar)="onModalCancelar()">
+    </app-modal-input>
+
   </div>
 </div>

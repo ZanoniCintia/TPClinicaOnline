@@ -16,6 +16,8 @@ export class HomeComponent implements OnInit {
   userEmail = '';
   avatarUrl = '';
   misTurnos: any[] = [];
+  turnosFiltrados: any[] = [];
+  turnos: any[] = [];
 
   modalVisible = false;
   modalTitulo = '';
@@ -23,6 +25,16 @@ export class HomeComponent implements OnInit {
   modalTurno: any = null;
   onConfirmarModal: (motivo: string) => void = () => {};
 
+  mostrarModal = false;
+  modalCallback: (valor: string) => void = () => {};
+  historiaClinicas: any[] = [];
+
+  modalAbierto = false;
+  modalHistoriaData: any = null;
+  soloLectura = false;
+  modoHistoriaClinica = false;
+  tituloModal = '';
+  descripcionModal = '';
 
   constructor(private router: Router) {
     this.supabase = createClient(environment.apiUrl, environment.publicAnonKey);
@@ -61,6 +73,7 @@ export class HomeComponent implements OnInit {
     });
 
     await this.cargarTurnos(user.id);
+    await this.cargarHistorias();
   }
 
   async cargarTurnos(userId: string) {
@@ -76,28 +89,26 @@ export class HomeComponent implements OnInit {
     }
 
     this.misTurnos = turnos ?? [];
+    this.turnosFiltrados = [...this.misTurnos];
   }
-  
 
- cancelarTurno(turno: any) {
-  
-  this.abrirModal(
-    'Cancelar turno',
-    'Ingrese el motivo de cancelación:',
-    turno,
-    async (motivo) => {
-      const { error } = await this.supabase
-        .from('turnos')
-        .update({ estado: 'cancelado', comentario_cancelacion: motivo })
-        .eq('id', turno.id);
+  cancelarTurno(turno: any) {
+    this.abrirModal(
+      'Cancelar turno',
+      'Ingrese el motivo de cancelación:',
+      turno,
+      async (motivo) => {
+        const { error } = await this.supabase
+          .from('turnos')
+          .update({ estado: 'cancelado', comentario_cancelacion: motivo })
+          .eq('id', turno.id);
 
-      if (!error) {
-        await this.cargarTurnos(turno.paciente_auth_id);
+        if (!error) {
+          await this.cargarTurnos(turno.paciente_auth_id);
+        }
       }
-    }
-  );
-}
-
+    );
+  }
 
   verResena(turno: any) {
     alert(`📝 Reseña: ${turno.resena}`);
@@ -136,9 +147,7 @@ export class HomeComponent implements OnInit {
 
     const { error } = await this.supabase
       .from('turnos')
-      .update({
-        encuesta: { respuesta },
-      })
+      .update({ encuesta: { respuesta } })
       .eq('id', turno.id);
 
     if (error) {
@@ -158,67 +167,130 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
-  
 
-  mostrarModal = false;
-
-modalCallback: (valor: string) => void = () => {};
-
-abrirModal(titulo: string, descripcion: string, turno: any, callback: (valor: string) => void) {
-  this.modalTitulo = titulo;
-  this.modalDescripcion = descripcion;
-  this.modalTurno = turno;
-  this.modalCallback = callback;
-  this.mostrarModal = true;
-}
-
-onModalAceptar(valor: string) {
-  this.mostrarModal = false;
-  this.modalCallback(valor);
-}
-
-onModalCancelar() {
-  this.mostrarModal = false;
-}
-
-async confirmarTurno(turno: any) {
-  const { error } = await this.supabase
-    .from('turnos')
-    .update({ estado: 'confirmado' })
-    .eq('id', turno.id);
-
-  if (!error) {
-    await this.cargarTurnos(turno.paciente_auth_id);
+  abrirModal(titulo: string, descripcion: string, turno: any, callback: (valor: string) => void) {
+    this.modalTitulo = titulo;
+    this.modalDescripcion = descripcion;
+    this.modalTurno = turno;
+    this.modalCallback = callback;
+    this.mostrarModal = true;
   }
-}
 
-async reprogramarTurno(turno: any) {
-  
-  this.router.navigate(['/solicitar-turno'], {
-    queryParams: {
-      especialidad: turno.especialidad,
-      especialista: turno.especialista_auth_id
+  onModalAceptar(valor: string) {
+    this.mostrarModal = false;
+    this.modalCallback(valor);
+  }
+
+  onModalCancelar() {
+    this.mostrarModal = false;
+  }
+
+  async confirmarTurno(turno: any) {
+    const { error } = await this.supabase
+      .from('turnos')
+      .update({ estado: 'confirmado' })
+      .eq('id', turno.id);
+
+    if (!error) {
+      await this.cargarTurnos(turno.paciente_auth_id);
     }
-  });
-}
+  }
 
-abrirCancelar(turno: any) {
-  this.abrirModal(
-    'Cancelar turno',
-    'Ingrese el motivo de cancelación:',
-    turno,
-    async (motivo: string) => {
-      const { error } = await this.supabase
-        .from('turnos')
-        .update({ estado: 'cancelado', comentario_cancelacion: motivo })
-        .eq('id', turno.id);
-
-      if (!error) {
-        await this.cargarTurnos(turno.paciente_auth_id);
+  async reprogramarTurno(turno: any) {
+    this.router.navigate(['/solicitar-turno'], {
+      queryParams: {
+        especialidad: turno.especialidad,
+        especialista: turno.especialista_auth_id
       }
+    });
+  }
+
+  abrirCancelar(turno: any) {
+    this.abrirModal(
+      'Cancelar turno',
+      'Ingrese el motivo de cancelación:',
+      turno,
+      async (motivo: string) => {
+        const { error } = await this.supabase
+          .from('turnos')
+          .update({ estado: 'cancelado', comentario_cancelacion: motivo })
+          .eq('id', turno.id);
+
+        if (!error) {
+          await this.cargarTurnos(turno.paciente_auth_id);
+        }
+      }
+    );
+  }
+
+  async cargarHistorias() {
+    const { data } = await this.supabase
+      .from('historia_clinica')
+      .select('*');
+
+    this.historiaClinicas = data ?? [];
+  }
+
+  tieneHistoriaClinica(turnoId: string): boolean {
+    return this.historiaClinicas.some(h => String(h.turno_id) === String(turnoId));
+  }
+
+  filtrarGlobal(valor: string) {
+    const texto = valor.toLowerCase().trim();
+
+    if (!texto) {
+      this.turnosFiltrados = [...this.misTurnos];
+      return;
     }
-  );
-}
 
+    this.turnosFiltrados = this.misTurnos.filter(turno => {
+      const paciente = `${turno.usuario_paciente?.name ?? ''} ${turno.usuario_paciente?.apellido ?? ''}`.toLowerCase();
+      const especialista = `${turno.usuario_especialista?.name ?? ''} ${turno.usuario_especialista?.apellido ?? ''}`.toLowerCase();
+      const especialidad = turno.especialidad?.toLowerCase() || '';
+      const estado = turno.estado?.toLowerCase() || '';
+      const datosTurno = `${paciente} ${especialista} ${especialidad} ${estado} ${turno.fecha} ${turno.hora}`;
 
+      const hc = this.historiaClinicas.find(h => h.turno_id === turno.id);
+      const hcTexto = hc
+        ? `${hc.altura} ${hc.peso} ${hc.temperatura} ${hc.presion} ` +
+          (hc.datos_dinamicos?.map((d: any) => `${d.clave} ${d.valor}`).join(' ') || '')
+        : '';
+
+      return (datosTurno + ' ' + hcTexto).toLowerCase().includes(texto);
+    });
+  }
+
+  async verHistoriaClinica(turno: any) {
+    const { data, error } = await this.supabase
+      .from('historia_clinica')
+      .select('altura, peso, temperatura, presion, datos_dinamicos')
+      .eq('turno_id', turno.id)
+      .maybeSingle();
+
+    if (error || !data) {
+      console.error('Error cargando HC', error);
+      return;
+    }
+
+    this.modalHistoriaData = {
+      altura: data.altura,
+      peso: data.peso,
+      temperatura: data.temperatura,
+      presion: data.presion,
+      datosDinamicos: data.datos_dinamicos ?? []
+    };
+
+    this.modalAbierto = true;
+    this.soloLectura = true;
+    this.modoHistoriaClinica = true;
+    this.tituloModal = 'Historia Clínica';
+    this.descripcionModal = 'Detalles registrados para el turno';
+  }
+
+  cerrarModal() {
+    this.modalAbierto = false;
+    this.modalHistoriaData = null;
+    this.soloLectura = false;
+    this.modoHistoriaClinica = false;
+  }
 }

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
@@ -50,4 +53,25 @@ export class MiPerfilPacienteComponent implements OnInit {
       this.turnos = this.turnos.map(t => t.id === turnoId ? { ...t, estado: 'cancelado' } : t);
     }
   }
+
+
+  async descargarExcelTurnos() {
+  const ws = XLSX.utils.json_to_sheet(this.turnos);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Turnos');
+  XLSX.writeFile(wb, 'mis_turnos.xlsx');
+}
+
+async descargarExcelHC() {
+  const { data } = await supabase
+    .from('historia_clinica')
+    .select('*')
+    .eq('paciente_auth_id', this.usuario.authid);
+
+  const ws = XLSX.utils.json_to_sheet(data ?? []);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'HistoriaClinica');
+  XLSX.writeFile(wb, 'mi_historia_clinica.xlsx');
+}
+
 }

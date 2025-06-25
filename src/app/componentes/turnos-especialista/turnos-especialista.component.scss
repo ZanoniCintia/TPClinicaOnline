@@ -332,3 +332,31 @@ label {
   color: white;
   font-weight: bold;
 }
+.mensaje-ok {
+  background-color: #d1fae5;
+  color: #065f46;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.mensaje-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.botonera-hc {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.botonera-hc button {
+  padding: 0.4rem 0.8rem;
+  font-size: 14px;
+}
+

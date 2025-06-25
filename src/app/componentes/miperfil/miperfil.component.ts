@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
@@ -14,6 +17,8 @@ export class MiPerfilComponent implements OnInit {
   usuario: any = {};
   especialidades: any[] = [];
   horarios: any[] = [];
+  turnos: any[] = [];
+  historiaClinicas: any[] = [];
 
   diasSemana = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
   nuevoDia = '';
@@ -38,8 +43,12 @@ export class MiPerfilComponent implements OnInit {
       .eq('auth_id', user?.id);
 
     this.especialidades = (especialidades ?? []).map(e => e.especialidades);
+    await this.cargarTurnos();
     this.cargarHorarios();
+
   }
+
+
 
   async cargarHorarios() {
     const { data } = await supabase
@@ -134,4 +143,41 @@ export class MiPerfilComponent implements OnInit {
   horariosDelDia(dia: string) {
     return this.horarios.filter(h => h.dia === dia);
   }
+
+  async descargarExcelTurnos() {
+  const ws = XLSX.utils.json_to_sheet(this.turnos);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Turnos');
+  XLSX.writeFile(wb, 'mis_turnos.xlsx');
+}
+
+async descargarExcelHC() {
+  const { data } = await supabase
+    .from('historia_clinica')
+    .select('*')
+    .eq('paciente_auth_id', this.usuario.authid);
+
+  const ws = XLSX.utils.json_to_sheet(data ?? []);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'HistoriaClinica');
+  XLSX.writeFile(wb, 'mi_historia_clinica.xlsx');
+}
+
+  async cargarHistorias() {
+  const { data, error } = await supabase
+    .from('historia_clinica')
+    .select('turno_id, altura, peso, temperatura, presion, datos_dinamicos');
+
+  this.historiaClinicas = data ?? [];
+}
+async cargarTurnos() {
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data } = await supabase
+    .from('turnos')
+    .select('*')
+    .eq('paciente_auth_id', user?.id);
+
+  this.turnos = data ?? [];
+}
+
 }

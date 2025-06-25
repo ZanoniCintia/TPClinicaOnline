@@ -13,19 +13,31 @@ export class TurnosEspecialistaComponent implements OnInit {
   private supabase: SupabaseClient = createClient(environment.apiUrl, environment.publicAnonKey);
   turnos: any[] = [];
   turnosFiltrados: any[] = [];
-  filtro = '';
   userId = '';
+  authUser: any;
+  historiaClinicas: any[] = [];
+
   modalVisible = false;
   modalTitulo = '';
   modalDescripcion = '';
   modalTurno: any = null;
   modalCallback: (input: string) => void = () => {};
 
+  modalAbierto = false;
+  modoHistoriaClinica = false;
+  soloLectura = false;
+  turnoSeleccionado: any = null;
+  modalHistoriaData: any = null;
+
+  mensaje: string = '';
+  errorMensaje: string = '';
 
   constructor(private router: Router) {}
+
   async ngOnInit() {
     const { data: { session } } = await this.supabase.auth.getSession();
     this.userId = session?.user?.id ?? '';
+    this.authUser = session?.user;
 
     const { data, error } = await this.supabase
       .from('turnos')
@@ -36,42 +48,53 @@ export class TurnosEspecialistaComponent implements OnInit {
       this.turnos = data;
       this.turnosFiltrados = data;
     }
+
+    await this.cargarHistorias();
   }
 
-  filtrar(tipo: 'especialidad' | 'paciente', valor: string) {
-    if (!valor) {
-      this.turnosFiltrados = this.turnos;
-      return;
-    }
+  async cargarHistorias() {
+    const { data, error } = await this.supabase
+      .from('historia_clinica')
+      .select('turno_id, altura, peso, temperatura, presion, datos_dinamicos');
 
-    this.turnosFiltrados = this.turnos.filter(turno =>
-      tipo === 'especialidad'
-        ? turno.especialidad?.toLowerCase().includes(valor.toLowerCase())
-        : (turno.usuario_paciente?.name + ' ' + turno.usuario_paciente?.apellido)
-            .toLowerCase()
-            .includes(valor.toLowerCase())
-    );
+    if (!error && data) {
+      this.historiaClinicas = data;
+    } else {
+      this.historiaClinicas = [];
+    }
+  }
+
+  filtrarGlobal(valor: string) {
+    valor = valor.toLowerCase();
+
+    this.turnosFiltrados = this.turnos.filter(turno => {
+      const paciente = `${turno.usuario_paciente?.name} ${turno.usuario_paciente?.apellido}`.toLowerCase();
+      const especialidad = turno.especialidad?.toLowerCase() || '';
+      const estado = turno.estado?.toLowerCase() || '';
+
+      const datos = `${paciente} ${especialidad} ${estado} ${turno.fecha} ${turno.hora}`;
+
+      const hc = this.historiaClinicas.find(h => String(h.turno_id) === String(turno.id));
+      const hcTexto = hc
+        ? `${hc.altura} ${hc.peso} ${hc.temperatura} ${hc.presion} ` +
+          (hc.datos_dinamicos?.map((d: any) => `${d.clave} ${d.valor}`).join(' ') || '')
+        : '';
+
+      return (datos + ' ' + hcTexto).toLowerCase().includes(valor);
+    });
+  }
+
+  irAMiPerfil() {
+    this.router.navigate(['/mi-perfil']);
   }
 
   puedeVerAcciones(estado: string): boolean {
     return !['cancelado', 'rechazado', 'realizado'].includes(estado.toLowerCase());
   }
-
-  puedeCancelar(estado: string): boolean {
-    return estado.toLowerCase() === 'pendiente';
-  }
-
-  puedeRechazar(estado: string): boolean {
-    return estado.toLowerCase() === 'pendiente';
-  }
-
-  puedeAceptar(estado: string): boolean {
-    return estado.toLowerCase() === 'pendiente';
-  }
-
-  puedeFinalizar(estado: string): boolean {
-    return estado.toLowerCase() === 'aceptado';
-  }
+  puedeCancelar(estado: string): boolean { return estado.toLowerCase() === 'pendiente'; }
+  puedeRechazar(estado: string): boolean { return estado.toLowerCase() === 'pendiente'; }
+  puedeAceptar(estado: string): boolean { return estado.toLowerCase() === 'pendiente'; }
+  puedeFinalizar(estado: string): boolean { return estado.toLowerCase() === 'aceptado'; }
 
   abrirModal(titulo: string, descripcion: string, turno: any, callback: (valor: string) => void) {
     this.modalTitulo = titulo;
@@ -130,13 +153,81 @@ export class TurnosEspecialistaComponent implements OnInit {
 
       this.turnos = data ?? [];
       this.turnosFiltrados = data ?? [];
-    } else {
-      console.error('Error actualizando turno:', error);
     }
   }
 
-  
-irAMiPerfil() {
-  this.router.navigate(['/mi-perfil']);
-}
+  abrirModalHistoriaClinica(turno: any) {
+    this.turnoSeleccionado = turno;
+    this.modalAbierto = true;
+    this.modoHistoriaClinica = true;
+    this.soloLectura = false;
+    this.modalHistoriaData = {
+      altura: null,
+      peso: null,
+      temperatura: null,
+      presion: '',
+      datosDinamicos: []
+    };
+  }
+
+  cerrarModal() {
+    this.modalAbierto = false;
+    this.modoHistoriaClinica = false;
+    this.soloLectura = false;
+    this.modalHistoriaData = null;
+  }
+
+  async guardarHistoriaClinica(datos: any) {
+    if (!this.turnoSeleccionado) return;
+
+    const { error } = await this.supabase.from('historia_clinica').insert({
+      turno_id: this.turnoSeleccionado.id,
+      paciente_auth_id: this.turnoSeleccionado.paciente_auth_id,
+      especialista_auth_id: this.authUser.id,
+      altura: datos.altura,
+      peso: datos.peso,
+      temperatura: datos.temperatura,
+      presion: datos.presion,
+      datos_dinamicos: datos.datosDinamicos
+    });
+
+    if (!error) {
+      this.mensaje = '✅ Historia clínica guardada con éxito.';
+      await this.cargarHistorias();
+    } else {
+      this.errorMensaje = '❌ Error al guardar historia clínica: ' + error.message;
+    }
+
+    this.cerrarModal();
+  }
+
+  tieneHistoriaClinica(turnoId: string): boolean {
+    return this.historiaClinicas.some(h => String(h.turno_id) === String(turnoId));
+  }
+
+  async verHistoriaClinica(turno: any) {
+    const { data, error } = await this.supabase
+      .from('historia_clinica')
+      .select('altura, peso, temperatura, presion, datos_dinamicos')
+      .eq('turno_id', turno.id)
+      .maybeSingle();
+
+    if (!data || error) {
+      this.errorMensaje = 'No se pudo cargar la historia clínica.';
+      return;
+    }
+
+    this.turnoSeleccionado = turno;
+    this.modalAbierto = true;
+    this.modoHistoriaClinica = true;
+    this.soloLectura = true;
+
+    this.modalHistoriaData = {
+      altura: data.altura,
+      peso: data.peso,
+      temperatura: data.temperatura,
+      presion: data.presion,
+      datosDinamicos: data.datos_dinamicos ?? []
+    };
+  }
 }

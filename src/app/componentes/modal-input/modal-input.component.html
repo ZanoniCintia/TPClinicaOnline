@@ -1,12 +1,82 @@
 <div class="modal-overlay">
   <div class="modal">
     <h2>{{ titulo }}</h2>
-    <p>{{ descripcion }}</p>
-    <textarea [(ngModel)]="valor" rows="4" placeholder="Escriba aquí..."></textarea>
-    <div class="botones">
-      <button (click)="confirmar()">Aceptar</button>
-      <button class="cancelar" (click)="cerrar()">Cancelar</button>
+    <p *ngIf="descripcion">{{ descripcion }}</p>
+
+    <!-- MODO HISTORIA CLÍNICA -->
+    <div *ngIf="modoHistoriaClinica; else modoTexto">
+      <div *ngIf="!soloLectura; else vistaLectura">
+        <div class="campo">
+          <label>Altura:</label>
+          <input type="number" [(ngModel)]="altura" />
+        </div>
+
+        <div class="campo">
+          <label>Peso:</label>
+          <input type="number" [(ngModel)]="peso" />
+        </div>
+
+        <div class="campo">
+          <label>Temperatura:</label>
+          <input type="number" [(ngModel)]="temperatura" />
+        </div>
+
+        <div class="campo">
+          <label>Presión:</label>
+          <input type="text" [(ngModel)]="presion" />
+        </div>
+
+        <hr />
+        <h4>Datos adicionales</h4>
+
+        <div class="dato-adicional" *ngFor="let dato of datosDinamicos; let i = index">
+          <input type="text" [(ngModel)]="dato.clave" placeholder="Clave" />
+          <input type="text" [(ngModel)]="dato.valor" placeholder="Valor" />
+          <button (click)="eliminarDato(i)">Eliminar</button>
+        </div>
+
+        <div class="botones">
+          <button (click)="agregarDato()" [disabled]="datosDinamicos.length >= 3">Agregar dato</button>
+        </div>
+
+        <div class="botones">
+          <button (click)="guardar.emit({
+            altura: altura,
+            peso: peso,
+            temperatura: temperatura,
+            presion: presion,
+            datosDinamicos: datosDinamicos
+          }); cerrar.emit()">Guardar Historia</button>
+          <button (click)="cerrar.emit()">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- SOLO LECTURA -->
+      <ng-template #vistaLectura>
+        <div class="campo"><label>Altura:</label> <span>{{ altura }}</span></div>
+        <div class="campo"><label>Peso:</label> <span>{{ peso }}</span></div>
+        <div class="campo"><label>Temperatura:</label> <span>{{ temperatura }}</span></div>
+        <div class="campo"><label>Presión:</label> <span>{{ presion }}</span></div>
+
+        <hr />
+        <h4>Datos adicionales</h4>
+        <div class="campo" *ngFor="let dato of datosDinamicos">
+          <label>{{ dato.clave }}:</label> <span>{{ dato.valor }}</span>
+        </div>
+
+        <div class="botones">
+          <button (click)="cerrar.emit()">Cerrar</button>
+        </div>
+      </ng-template>
     </div>
+
+    <!-- MODO TEXTO -->
+    <ng-template #modoTexto>
+      <textarea [(ngModel)]="valor" rows="4" placeholder="Escriba aquí..."></textarea>
+      <div class="botones">
+        <button (click)="confirmar()">Aceptar</button>
+        <button (click)="cancelar.emit()">Cancelar</button>
+      </div>
+    </ng-template>
   </div>
 </div>
-

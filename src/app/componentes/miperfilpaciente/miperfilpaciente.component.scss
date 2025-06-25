@@ -178,3 +178,24 @@ ul.horario-lista {
     }
   }
 }
+.botones-export {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  button {
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #2ecc71;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background-color: #27ae60;
+    }
+  }
+}
