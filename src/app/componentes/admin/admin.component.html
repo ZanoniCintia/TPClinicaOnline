@@ -1,53 +1,179 @@
 <div class="admin-container">
-      <div class="user-info">
-      
+  <div class="user-info">
+    <a class="logout-link" (click)="logout()">logout</a>
+  </div>
 
-      <a class="logout-link" (click)="logout()">logout</a>
-    </div>
   <h2>Panel de Administración</h2>
 
-  <button (click)="exportarUsuariosAExcel()" class="solicitar-turno-btn">
-  📁 Exportar usuarios a Excel
-</button>
+  <!-- INFORMES DEL SISTEMA -->
+  <div class="informes-panel">
+    <h3>📊 Informes del Sistema</h3>
+    <div class="botones-informes">
+      <button (click)="verLogIngresos()">🧾 Log de Ingresos</button>
+      <button (click)="verTurnosPorEspecialidad()">📌 Turnos por Especialidad</button>
+      <button (click)="verTurnosPorDia()">📅 Turnos por Día</button>
+      <button (click)="verTurnosPorMedico()">👨‍⚕️ Turnos por Médico</button>
+      <button (click)="verTurnosFinalizados()">✅ Finalizados por Médico</button>
+    </div>
+
+    <!-- LOG DE INGRESOS -->
+    <div *ngIf="mostrarLogIngresos">
+      <h4>📘 Log de ingresos</h4>
+      <button (click)="exportarAExcel(logs, 'logs_ingresos')">📁 Exportar</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Fecha y hora</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td>{{ log.name }}</td>
+            <td>{{ log.email }}</td>
+            <td>{{ log.fecha | date: 'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TURNOS POR ESPECIALIDAD -->
+    <div *ngIf="mostrarTurnosEspecialidad">
+  <h4>📈 Turnos por especialidad</h4>
+  <table>
+    <!-- GRÁFICO: Turnos por Especialidad -->
+<div *ngIf="mostrarTurnosEspecialidad && turnosPorEspecialidad.length">
+  <h4>📊 Gráfico: Turnos por Especialidad</h4>
+  <div style="display: flex; align-items: flex-end; gap: 8px; height: 200px;">
+    <div *ngFor="let item of turnosPorEspecialidad" style="text-align: center;">
+      <div
+        [style.height.px]="item.count * 10"
+        style="width: 40px; background: steelblue; color: white; display: flex; align-items: flex-end; justify-content: center;">
+        {{ item.count }}
+      </div>
+      <div style="margin-top: 4px; font-size: 12px;">{{ item.especialidad }}</div>
+    </div>
+  </div>
+</div>
+
+    <thead>
+      <tr>
+        <th>Especialidad</th>
+        <th>Cantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let esp of turnosPorEspecialidad">
+        <td>{{ esp.especialidad }}</td>
+        <td>{{ esp.cantidad }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 
-  <!-- Spinner -->
+    <!-- TURNOS POR DÍA -->
+   <div *ngIf="mostrarTurnosPorDia">
+  <h4>📅 Turnos por Día</h4>
+  <table>
+    <!-- GRÁFICO: Turnos por Día -->
+<div *ngIf="mostrarTurnosPorDia && turnosPorDia.length">
+  <h4>📈 Turnos por Día</h4>
+  <svg width="600" height="300">
+    <polyline
+      [attr.points]="getLineaTurnosPorDia()"
+      stroke="blue" stroke-width="2" fill="none" />
+    <g *ngFor="let p of turnosPorDia; let i = index">
+      <circle [attr.cx]="i * 60 + 30" [attr.cy]="300 - (p.cantidad * 10)" r="4" fill="red"></circle>
+      <text [attr.x]="i * 60 + 20" y="290" font-size="10">{{ p.fecha | date:'dd/MM' }}</text>
+    </g>
+  </svg>
+</div>
+
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Cantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of turnosPorDia">
+        <td>{{ item.fecha }}</td>
+        <td>{{ item.cantidad }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+ <!-- Turnos por Médico -->
+<div *ngIf="mostrarTurnosPorMedico">
+  <h4>👨‍⚕️ Turnos por Médico</h4>
+  <table>
+    <tr>
+      <th>Médico</th>
+      <th>Cantidad</th>
+    </tr>
+    <tr *ngFor="let item of turnosPorMedico">
+      <td>{{ item.medico }}</td>
+      <td>{{ item.cantidad }}</td>
+    </tr>
+  </table>
+</div>
+
+    <!-- TURNOS FINALIZADOS POR MÉDICO -->
+    <!-- FINALIZADOS POR MÉDICO -->
+<div *ngIf="mostrarFinalizadosPorMedico">
+  <h4>✅ Turnos Finalizados por Médico</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Médico</th>
+        <th>Cantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of finalizadosPorMedico">
+        <td>{{ m.medico }}</td>
+        <td>{{ m.cantidad }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+  <!-- EXPORTAR USUARIOS -->
+  <button (click)="exportarUsuariosAExcel()" class="solicitar-turno-btn">📁 Exportar usuarios a Excel</button>
+
+  <!-- SPINNER -->
   <div *ngIf="cargando">
     <img src="assets/informe.gif" alt="Cargando..." width="50" />
   </div>
 
-  <!-- Tabla de usuarios -->
+  <!-- USUARIOS -->
   <div *ngIf="!cargando && usuarios.length">
-    <table>
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>Nombre</th>
-          <th>Rol</th>
-          <th>Estado</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let u of usuarios">
-          <td>{{ u.email }}</td>
-          <td>{{ u.nombre || u.name }}</td>
-          <td>{{ u.rol }}</td>
-          <td>{{ u.estado ? 'Activo' : 'Inactivo' }}</td>
-          <td *ngIf="u.rol === 'especialista'">
-            <button (click)="alternarEstado(u)">
+    <div class="cards-container">
+      <div *ngFor="let u of usuarios" class="card-usuario">
+        <img [src]="u.avatarurl || 'assets/default-avatar.png'" class="avatar" />
+        <div class="info-usuario">
+          <p><strong>{{ u.nombre || u.name }} {{ u.apellido }}</strong></p>
+          <p>{{ u.email }}</p>
+          <p>{{ u.rol | titlecase }} - {{ u.estado ? 'Activo' : 'Inactivo' }}</p>
+          <div class="acciones">
+            <button *ngIf="u.rol === 'paciente'" (click)="descargarTurnosDelPaciente(u.authid)">📥 Turnos</button>
+            <button *ngIf="u.rol === 'especialista'" (click)="alternarEstado(u)">
               {{ u.estado ? 'Inhabilitar' : 'Aprobar' }}
             </button>
-          </td>
-          <td *ngIf="u.rol !== 'especialista'">-</td>
-        </tr>
-      </tbody>
-    </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
   <button (click)="irATurnos()">Ver Turnos</button>
 
-
-  <!-- Crear nuevo administrador -->
+  <!-- CREAR ADMIN -->
   <hr />
   <h3>Crear Usuario Administrador</h3>
   <form (ngSubmit)="crearAdmin()" #formAdmin="ngForm">

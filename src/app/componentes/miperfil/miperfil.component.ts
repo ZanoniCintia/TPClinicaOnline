@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-
+import { Router } from '@angular/router';
 
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
@@ -14,6 +14,7 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   styleUrls: ['./miperfil.component.scss']
 })
 export class MiPerfilComponent implements OnInit {
+  [x: string]: any;
   usuario: any = {};
   especialidades: any[] = [];
   horarios: any[] = [];
@@ -26,6 +27,7 @@ export class MiPerfilComponent implements OnInit {
   nuevaHoraFin = '';
   mensaje = '';
   error = '';
+ constructor(private router: Router) {}
 
   async ngOnInit() {
     const { data: { user } } = await supabase.auth.getUser();
@@ -178,6 +180,10 @@ async cargarTurnos() {
     .eq('paciente_auth_id', user?.id);
 
   this.turnos = data ?? [];
+}
+
+irAMisPacientes() {
+  this.router.navigate(['/mis-pacientes']);
 }
 
 }

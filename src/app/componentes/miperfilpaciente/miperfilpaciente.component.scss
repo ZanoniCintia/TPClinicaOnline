@@ -179,6 +179,20 @@ ul.horario-lista {
   }
 }
 .botones-export {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+select {
+  padding: 6px 12px;
+  margin-left: 8px;
+}
+
+
+.botones-export {
   display: flex;
   justify-content: center;
   gap: 1rem;
@@ -198,4 +212,7 @@ ul.horario-lista {
       background-color: #27ae60;
     }
   }
+
+
+
 }

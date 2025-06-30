@@ -78,6 +78,10 @@ export const routes: Routes = [
     {
       path: 'admin-turno',
       loadChildren: () => import('./componentes/solicitar-turno-admin/solicitar-turno-admin.module').then(m => m.AdminSolicitarTurnoModule),data: { animation: 'AdminPage' }
+    },
+    {
+      path: 'mis-pacientes',
+      loadChildren: () => import('./componentes/pacientes-especialista/pacientes-especialista.module').then(m => m.PacientesEspecialistaModule),data: { animation: 'AdminPage' }
     }
 
 

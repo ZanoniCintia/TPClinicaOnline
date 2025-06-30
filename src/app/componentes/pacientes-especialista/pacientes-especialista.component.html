@@ -1,0 +1,45 @@
+<div class="pacientes-container">
+  <div class="content-box">
+    <h2>Pacientes Atendidos</h2>
+
+    <div *ngIf="pacientes.length === 0">No hay pacientes aún.</div>
+
+    <div *ngFor="let p of pacientes" class="card-paciente">
+      <img [src]="p.avatarurl" alt="Avatar" class="avatar" />
+      <div class="datos-paciente">
+        <h3>{{ p.nombre }} {{ p.apellido }}</h3>
+        <p><strong>Últimos turnos:</strong></p>
+        <ul>
+          <li *ngFor="let fecha of p.turnos">{{ fecha | formatoFecha }}
+</li>
+        </ul>
+        <button class="btn-historia" (click)="verHistoriaClinica(p.id)">Ver Historia Clínica</button>
+      </div>
+    </div>
+
+    <!-- MODAL Historia Clínica -->
+<div *ngIf="mostrarModal" class="modal-overlay">
+  <div class="modal-card">
+    <h2>Historia Clínica</h2>
+
+    <div *ngIf="historiaClinica.length === 0">
+      <p>No hay registros para este paciente.</p>
+    </div>
+
+    <div *ngFor="let registro of historiaClinica" class="historia-entry">
+      <p><strong>Fecha:</strong> {{ registro.fecha | date: 'short' }}</p>
+      <p><strong>Altura:</strong> {{ registro.altura }} cm</p>
+      <p><strong>Peso:</strong> {{ registro.peso }} kg</p>
+      <p><strong>Temperatura:</strong> {{ registro.temperatura }} °C</p>
+      <p><strong>Presión:</strong> {{ registro.presion }}</p>
+      <p><strong>Otros datos:</strong></p>
+      <pre>{{ registro.datos_dinamicos | json }}</pre>
+      <hr />
+    </div>
+
+    <button class="cerrar-modal-btn" (click)="cerrarModal()">Cerrar</button>
+  </div>
+</div>
+
+  </div>
+</div>

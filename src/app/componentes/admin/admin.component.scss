@@ -123,3 +123,94 @@ input[type="file"] {
   .logout-link:hover {
     color: #0b7dcf;
   }
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.card-usuario {
+  background: #e6f4fa;
+  border-radius: 15px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 260px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #3498db;
+}
+
+.info-usuario p {
+  margin: 0.2rem 0;
+}
+
+.acciones button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+
+  &:hover {
+    background-color: #2c80b4;
+  }
+}
+
+.informes-panel {
+  background-color: #f1f1f1;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+
+  h3 {
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  .botones-informes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #2e86de;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #1c60a6;
+      }
+    }
+  }
+
+  .botones-informes button {
+  background-color: #1976d2;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  margin: 0 5px 10px 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.botones-informes button:hover {
+  background-color: #125ea8;
+}
+
+}
+

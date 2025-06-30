@@ -20,6 +20,9 @@ export class MiPerfilPacienteComponent implements OnInit {
   error = '';
   defaultAvatar = 'https://okhubqbtmacszztmqiki.supabase.co/storage/v1/object/public/avatars/equipo-medico.png';
 
+  especialidadSeleccionada = '';
+  especialidadesDisponibles: string[] = []; // se completa desde historia_clinica
+
   async ngOnInit() {
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -38,6 +41,24 @@ export class MiPerfilPacienteComponent implements OnInit {
       .order('fecha', { ascending: true });
 
     this.turnos = turnos ?? [];
+
+    /*const { data: especialidades } = await supabase
+      .from('historia_clinica')
+      .select('especialidad')
+      .eq('paciente_auth_id', user?.id);
+
+    this.especialidadesDisponibles = [...new Set((especialidades ?? []).map(e => e.especialidad))];*/
+    const { data: historia } = await supabase
+  .from('historia_clinica')
+  .select('turnos(especialidad)')
+  .eq('paciente_auth_id', user?.id);
+
+this.especialidadesDisponibles = [...new Set(
+  (historia ?? [])
+    .map((h: any) => h.turnos?.especialidad)
+    .filter((e: any) => !!e)
+)];
+
   }
 
   async cancelarTurno(turnoId: string) {
@@ -54,24 +75,105 @@ export class MiPerfilPacienteComponent implements OnInit {
     }
   }
 
-
   async descargarExcelTurnos() {
-  const ws = XLSX.utils.json_to_sheet(this.turnos);
+  if (!this.turnos || this.turnos.length === 0) {
+    this.error = 'No hay turnos para exportar.';
+    return;
+  }
+
+  const datosLimpios = this.turnos.map(t => ({
+    Fecha: t.fecha,
+    Hora: t.hora,
+    Estado: t.estado,
+    Especialidad: t.especialidad,
+    Comentario: t.comentario_resena,
+    Calificación: t.calificacion,
+  }));
+
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Turnos');
+  const hoja = XLSX.utils.json_to_sheet([]);
+
+  const encabezado = [
+    [`Turnos del paciente: ${this.usuario.name} ${this.usuario.apellido}`],
+    [`DNI: ${this.usuario.dni} - Email: ${this.usuario.email}`],
+    [],
+  ];
+
+  XLSX.utils.sheet_add_aoa(hoja, encabezado, { origin: 'A1' });
+  XLSX.utils.sheet_add_json(hoja, datosLimpios, { origin: -1 });
+
+  XLSX.utils.book_append_sheet(wb, hoja, 'Turnos');
   XLSX.writeFile(wb, 'mis_turnos.xlsx');
 }
 
-async descargarExcelHC() {
+
+ async descargarExcelHC() {
   const { data } = await supabase
     .from('historia_clinica')
     .select('*')
     .eq('paciente_auth_id', this.usuario.authid);
 
-  const ws = XLSX.utils.json_to_sheet(data ?? []);
+  if (!data || data.length === 0) {
+    this.error = 'No hay historia clínica registrada.';
+    return;
+  }
+
+  const hcLimpia = data.map(entry => ({
+    Fecha: new Date(entry.fecha).toLocaleDateString(),
+    Especialidad: entry.especialidad,
+    Altura: entry.altura,
+    Peso: entry.peso,
+    Temperatura: entry.temperatura,
+    Presión: entry.presion,
+    DatosExtra: entry.datos_dinamicos || '',
+  }));
+
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'HistoriaClinica');
+  const hoja = XLSX.utils.json_to_sheet([]);
+
+  const encabezado = [
+    [`Historia Clínica de: ${this.usuario.name} ${this.usuario.apellido}`],
+    [`DNI: ${this.usuario.dni} - Email: ${this.usuario.email}`],
+    [`Fecha de descarga: ${new Date().toLocaleDateString()}`],
+    [],
+  ];
+
+  XLSX.utils.sheet_add_aoa(hoja, encabezado, { origin: 'A1' });
+  XLSX.utils.sheet_add_json(hoja, hcLimpia, { origin: -1 });
+
+  XLSX.utils.book_append_sheet(wb, hoja, 'HistoriaClínica');
   XLSX.writeFile(wb, 'mi_historia_clinica.xlsx');
 }
 
+
+ historiaFiltrada: any[] = [];
+today = new Date();
+
+async imprimirHistoria() {
+  if (!this.especialidadSeleccionada) {
+    this.error = 'Seleccioná una especialidad para continuar.';
+    return;
+  }
+
+  const { data } = await supabase
+    .from('historia_clinica')
+    .select('*')
+    .eq('paciente_auth_id', this.usuario.authid)
+    .eq('especialidad', this.especialidadSeleccionada);
+
+  this.historiaFiltrada = data ?? [];
+
+  setTimeout(() => {
+    const printContents = document.getElementById('printArea')?.innerHTML;
+    const originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents || '';
+    window.print();
+    document.body.innerHTML = originalContents;
+
+    window.location.reload();
+  }, 500);
+}
+
+  
 }

@@ -1,11 +1,57 @@
-<!-- miperfilpaciente.component.html -->
 <div class="home-container">
   <div class="content-box">
-    <h1>Mi Perfil</h1>
-     <div class="botones-export">
-        <button (click)="descargarExcelTurnos()">📥 Descargar Turnos</button>
-        <button (click)="descargarExcelHC()">📥 Descargar Historia Clínica</button>
+
+    <!-- Título y filtro alineados arriba -->
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1>Mi Perfil</h1>
+      <div>
+        <label for="especialidad">Filtrar por especialidad:</label>
+        <select id="especialidad" [(ngModel)]="especialidadSeleccionada">
+          <option value="">-- Seleccionar --</option>
+          <option *ngFor="let esp of especialidadesDisponibles" [value]="esp">{{ esp }}</option>
+        </select>
       </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="botones-export">
+      <button (click)="descargarExcelTurnos()">📥 Descargar Turnos</button>
+      <button (click)="descargarExcelHC()">📥 Descargar Historia Clínica</button>
+      <button (click)="imprimirHistoria()">🖨️ Imprimir Historia Clínica PDF</button>
+    </div>
+
+    <!-- Área oculta para impresión -->
+    <div id="printArea" style="display: none;">
+      <div style="text-align: center;">
+        <img src="assets/logo-clinica.png" alt="Logo" width="100" />
+        <h2>Historia Clínica</h2>
+        <p><strong>Paciente:</strong> {{ usuario.name }} {{ usuario.apellido }}</p>
+        <p><strong>Especialidad:</strong> {{ especialidadSeleccionada }}</p>
+        <p><strong>Fecha:</strong> {{ today | date:'fullDate' }}</p>
+      </div>
+      <table border="1" cellspacing="0" cellpadding="8" width="100%">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Altura</th>
+            <th>Peso</th>
+            <th>Temperatura</th>
+            <th>Presión</th>
+            <th>Otros datos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let h of historiaFiltrada">
+            <td>{{ h.fecha | date:'shortDate' }}</td>
+            <td>{{ h.altura }}</td>
+            <td>{{ h.peso }}</td>
+            <td>{{ h.temperatura }}</td>
+            <td>{{ h.presion }}</td>
+            <td>{{ h.datos_dinamicos }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Datos del paciente -->
     <div class="perfil-header">
@@ -18,30 +64,5 @@
         <p><strong>Obra Social:</strong> {{ usuario.obra_social || 'No especificada' }}</p>
       </div>
     </div>
+  </div>
 </div>
-    <!-- Turnos 
-    <div *ngIf="turnos.length">
-      <h2>Mis Turnos</h2>
-      <ul class="turno-lista">
-        <li *ngFor="let turno of turnos">
-          <div class="turno-card">
-            <p>
-              <strong>Fecha:</strong> {{ turno.fecha }}
-              | <strong>Hora:</strong> {{ turno.hora }}
-            </p>
-            <p>
-              <strong>Profesional:</strong> {{ turno.especialista_email }}
-              | <strong>Especialidad:</strong> {{ turno.especialidad }}
-              | <strong>Estado:</strong> {{ turno.estado }}
-            </p>
-            <button *ngIf="turno.estado === 'pendiente'" (click)="cancelarTurno(turno.id)">Cancelar</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <p *ngIf="mensaje" class="mensaje-ok">{{ mensaje }}</p>
-    <p *ngIf="error" class="mensaje-error">{{ error }}</p>
-  </div>-->
-
-
