@@ -9,7 +9,7 @@
   <div class="informes-panel">
     <h3>📊 Informes del Sistema</h3>
     <div class="botones-informes">
-      <button (click)="verLogIngresos()">🧾 Log de Ingresos</button>
+      <button (click)="verLogIngresos()">📘 Log de Ingresos</button>
       <button (click)="verTurnosPorEspecialidad()">📌 Turnos por Especialidad</button>
       <button (click)="verTurnosPorDia()">📅 Turnos por Día</button>
       <button (click)="verTurnosPorMedico()">👨‍⚕️ Turnos por Médico</button>
@@ -22,11 +22,7 @@
       <button (click)="exportarAExcel(logs, 'logs_ingresos')">📁 Exportar</button>
       <table>
         <thead>
-          <tr>
-            <th>Usuario</th>
-            <th>Email</th>
-            <th>Fecha y hora</th>
-          </tr>
+          <tr><th>Usuario</th><th>Email</th><th>Fecha y hora</th></tr>
         </thead>
         <tbody>
           <tr *ngFor="let log of logs">
@@ -40,91 +36,76 @@
 
     <!-- TURNOS POR ESPECIALIDAD -->
     <div *ngIf="mostrarTurnosEspecialidad">
-  <h4>📈 Turnos por especialidad</h4>
-  <table>
-    <!-- GRÁFICO: Turnos por Especialidad -->
-<div *ngIf="mostrarTurnosEspecialidad && turnosPorEspecialidad.length">
-  <h4>📊 Gráfico: Turnos por Especialidad</h4>
-  <div style="display: flex; align-items: flex-end; gap: 8px; height: 200px;">
-    <div *ngFor="let item of turnosPorEspecialidad" style="text-align: center;">
-      <div
-        [style.height.px]="item.count * 10"
-        style="width: 40px; background: steelblue; color: white; display: flex; align-items: flex-end; justify-content: center;">
-        {{ item.count }}
+      <h4>📈 Turnos por Especialidad</h4>
+      <table>
+        <thead>
+          <tr><th>Especialidad</th><th>Cantidad</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let esp of turnosPorEspecialidad">
+            <td>{{ esp.especialidad }}</td>
+            <td>{{ esp.cantidad }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="turnosPorEspecialidad.length" style="max-width: 380px; margin: 20px auto;">
+        <h4>📊 Gráfico</h4>
+        <div style="position: relative; height: 200px;">
+          <canvas #chartTurnosEspecialidad></canvas>
+        </div>
+        <button (click)="descargarGrafico()">📥 Descargar Gráfico</button>
       </div>
-      <div style="margin-top: 4px; font-size: 12px;">{{ item.especialidad }}</div>
     </div>
-  </div>
-</div>
-
-    <thead>
-      <tr>
-        <th>Especialidad</th>
-        <th>Cantidad</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let esp of turnosPorEspecialidad">
-        <td>{{ esp.especialidad }}</td>
-        <td>{{ esp.cantidad }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 
     <!-- TURNOS POR DÍA -->
-   <div *ngIf="mostrarTurnosPorDia">
-  <h4>📅 Turnos por Día</h4>
-  <table>
-    <!-- GRÁFICO: Turnos por Día -->
-<div *ngIf="mostrarTurnosPorDia && turnosPorDia.length">
-  <h4>📈 Turnos por Día</h4>
-  <svg width="600" height="300">
-    <polyline
-      [attr.points]="getLineaTurnosPorDia()"
-      stroke="blue" stroke-width="2" fill="none" />
-    <g *ngFor="let p of turnosPorDia; let i = index">
-      <circle [attr.cx]="i * 60 + 30" [attr.cy]="300 - (p.cantidad * 10)" r="4" fill="red"></circle>
-      <text [attr.x]="i * 60 + 20" y="290" font-size="10">{{ p.fecha | date:'dd/MM' }}</text>
-    </g>
-  </svg>
-</div>
+    <div *ngIf="mostrarTurnosPorDia">
+      <h4>📅 Turnos por Día</h4>
+      <table>
+        <thead><tr><th>Fecha</th><th>Cantidad</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let item of turnosPorDia">
+            <td>{{ item.fecha }}</td>
+            <td>{{ item.cantidad }}</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Cantidad</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of turnosPorDia">
-        <td>{{ item.fecha }}</td>
-        <td>{{ item.cantidad }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+      <div *ngIf="turnosPorDia.length" style="max-width: 420px; margin: 20px auto;">
+        <h4>📈 Gráfico</h4>
+        <div style="position: relative; height: 220px;">
+          <canvas #chartTurnosPorDia></canvas>
+        </div>
+        <button (click)="descargarGraficoDia()">📥 Descargar Gráfico</button>
+      </div>
+    </div>
 
+    <!-- TURNOS POR MÉDICO -->
+    <div *ngIf="mostrarTurnosPorMedico">
+      <h4>👨‍⚕️ Turnos por Médico</h4>
+      <table>
+        <thead><tr><th>Médico</th><th>Cantidad</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let item of turnosPorMedico">
+            <td>{{ item.medico }}</td>
+            <td>{{ item.cantidad }}</td>
+          </tr>
+        </tbody>
+      </table>
 
- <!-- Turnos por Médico -->
-<div *ngIf="mostrarTurnosPorMedico">
-  <h4>👨‍⚕️ Turnos por Médico</h4>
-  <table>
-    <tr>
-      <th>Médico</th>
-      <th>Cantidad</th>
-    </tr>
-    <tr *ngFor="let item of turnosPorMedico">
-      <td>{{ item.medico }}</td>
-      <td>{{ item.cantidad }}</td>
-    </tr>
-  </table>
-</div>
+      <div *ngIf="turnosPorMedico.length" style="max-width: 480px; margin: 20px auto;">
+        <h4>📋 Gráfico</h4>
+        <div style="position: relative; height: 250px;">
+          <canvas #chartTurnosPorMedico></canvas>
+        </div>
+        <button (click)="descargarGraficoMedico()">📥 Descargar Gráfico</button>
+      </div>
+    </div>
+    
 
-    <!-- TURNOS FINALIZADOS POR MÉDICO -->
-    <!-- FINALIZADOS POR MÉDICO -->
-<div *ngIf="mostrarFinalizadosPorMedico">
+    
+
+   <div *ngIf="mostrarFinalizadosPorMedico">
   <h4>✅ Turnos Finalizados por Médico</h4>
   <table>
     <thead>
@@ -140,15 +121,25 @@
       </tr>
     </tbody>
   </table>
+
+  <!-- GRÁFICO CHART.JS FINALIZADOS -->
+  <div *ngIf="finalizadosPorMedico.length" style="width: 100%; max-width: 480px; margin: 20px auto; padding: 16px; border-radius: 12px; box-shadow: 0 0 8px rgba(0,0,0,0.1); background: #fff;">
+    <h4 style="margin-bottom: 10px; font-size: 16px;">📊 Gráfico: Finalizados por Médico</h4>
+    <div style="position: relative; height: 250px; width: 100%;">
+      <canvas #chartFinalizadosPorMedico></canvas>
+    </div>
+    <button (click)="descargarGraficoFinalizados()" style="margin-top: 12px;">📥 Descargar Gráfico</button>
+  </div>
 </div>
 
 
-  <!-- EXPORTAR USUARIOS -->
-  <button (click)="exportarUsuariosAExcel()" class="solicitar-turno-btn">📁 Exportar usuarios a Excel</button>
+    <!-- EXPORTAR USUARIOS -->
+    <button (click)="exportarUsuariosAExcel()" class="solicitar-turno-btn">📁 Exportar usuarios a Excel</button>
 
-  <!-- SPINNER -->
-  <div *ngIf="cargando">
-    <img src="assets/informe.gif" alt="Cargando..." width="50" />
+    <!-- SPINNER -->
+    <div *ngIf="cargando">
+      <img src="assets/informe.gif" alt="Cargando..." width="50" />
+    </div>
   </div>
 
   <!-- USUARIOS -->
