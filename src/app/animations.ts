@@ -20,11 +20,11 @@ export const fadeSlideAnimation =
 
       group([
         query(':leave', [
-          animate('300ms ease', style({ opacity: 0, transform: 'translateX(-50px)' }))
+          animate('300ms ease', style({ opacity: 0, transform: 'translateX(50px)' }))
         ], { optional: true }),
 
         query(':enter', [
-          style({ transform: 'translateX(50px)' }),
+          style({ transform: 'translateX(-50px)' }),
           animate('300ms ease', style({ opacity: 1, transform: 'translateX(0)' }))
         ], { optional: true })
       ])
