@@ -2,7 +2,7 @@
   <div class="content-box">
     <div class="user-info">
       <button routerLink="/mi-perfil-paciente">Mi Perfil</button>
-      <span *ngIf="userName">👤 {{ userName }}</span>
+      <span *ngIf="userName">👤{{ userName | iniciales }}</span>
       <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" class="avatar-img" />
       <a class="logout-link" (click)="logout()">logout</a>
     </div>
@@ -23,24 +23,25 @@
       />
     </div>
 
-    <div *ngFor="let turno of turnosFiltrados" class="turno-card">
-      <div class="turno-info">
-        <p><strong>🩺 Especialidad:</strong> {{ turno.especialidad }}</p>
-        <p><strong>📅 Fecha:</strong> {{ turno.fecha }}</p>
-        <p><strong>⏰ Hora:</strong> {{ turno.hora }}</p>
-        <p>
-          <strong>📌 Estado:</strong>
-          <span
-            [ngClass]="{
-              'pendiente': turno.estado === 'pendiente',
-              'cancelado': turno.estado === 'cancelado',
-              'confirmado': turno.estado === 'confirmado'
-            }"
-          >
-            {{ turno.estado }}
-          </span>
-        </p>
-      </div>
+ <div *ngFor="let turno of turnosFiltrados" class="turno-card" appResaltar="whitesmoke">
+  <div class="turno-info">
+    <p><strong>🩺 Especialidad:</strong> {{ turno.especialidad }}</p>
+    <p><strong>📅 Fecha:</strong> {{ turno.fecha | formatoFecha }}</p>
+    <p><strong>⏰ Hora:</strong> {{ turno.hora }}</p>
+    <p>
+      <strong>📌 Estado:</strong>
+      <span
+        [appEstadoColor]="turno.estado === 'confirmado'"
+        [ngClass]="{
+          'pendiente': turno.estado === 'pendiente',
+          'cancelado': turno.estado === 'cancelado',
+          'confirmado': turno.estado === 'confirmado'
+        }"
+      >
+        {{ turno.estado | inicialMayuscula }}
+      </span>
+    </p>
+  </div>
 
       <app-modal-input
         *ngIf="modalAbierto"
